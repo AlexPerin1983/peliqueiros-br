@@ -13,6 +13,12 @@
     <link rel="icon" href="icons/peliqueiros.png" type="image/png">
     <link rel="manifest" href="/peliqueiros-br/manifest.json">
     <meta name="theme-color" content="#000000">
+    <style>
+        /* Certificando que o popup será sempre visível */
+        #popupCliente, #popupUsuario {
+            z-index: 10000; /* Elevando o nível do popup */
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -161,6 +167,7 @@
             </div>
             <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
                 <button id="saveUserInfoButton" type="submit" form="userForm" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">Salvar</button>
+            </div>
         </div>
     </div>
 
@@ -308,29 +315,34 @@
             $('#popupClienteCNPJ, #cnpjClienteInput').mask('00.000.000/0000-00');
         });
 
-        async function abrirPopup(acao) {
-            const popupCliente = document.getElementById('popupCliente');
-            const popupTitulo = document.getElementById('popupTitulo');
+        function abrirPopup(acao) {
+            console.log("Popup acionado para:", acao);
 
-            if (!popupCliente || !popupTitulo) {
-                console.error("Elementos do popup não encontrados");
-                return;
-            }
+    const popupCliente = document.getElementById('popupCliente');
+    const popupTitulo = document.getElementById('popupTitulo');
+    const clienteSelect = document.getElementById('clienteSelect');
 
-            if (acao === 'adicionar') {
-                popupTitulo.innerText = 'Adicionar Novo Cliente';
-                limparCamposPopup();
-                clienteSelecionado = '';
-            } else if (acao === 'editar') {
-                popupTitulo.innerText = 'Editar Cliente';
-                clienteSelecionado = clienteSelect.value;
-                console.log("Editando cliente:", clienteSelecionado);
-                await carregarDadosCliente(clienteSelecionado);
-            }
+    if (!popupCliente || !popupTitulo || !clienteSelect) {
+        console.error("Elementos necessários não encontrados");
+        return;
+    }
 
-            popupCliente.classList.remove('hidden');
-            popupCliente.style.display = 'flex';
-        }
+    if (acao === 'adicionar') {
+        popupTitulo.innerText = 'Adicionar Novo Cliente';
+        limparCamposPopup();
+        clienteSelecionado = '';
+    } else if (acao === 'editar') {
+        popupTitulo.innerText = 'Editar Cliente';
+        clienteSelecionado = clienteSelect.value;
+        console.log("Editando cliente:", clienteSelecionado);
+        carregarDadosCliente(clienteSelecionado);
+    }
+
+    popupCliente.classList.remove('hidden');
+    popupCliente.style.display = 'flex';
+    console.log("Popup deve aparecer agora:", popupCliente);
+
+}
 
         function limparCamposPopup() {
             document.getElementById('popupClienteNome').value = '';
