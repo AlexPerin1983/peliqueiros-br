@@ -214,6 +214,74 @@
         let clientes = [];
         let clienteSelecionado = '';
 
+
+        async function carregarClientes(clienteSelecionado = '', moverParaTopo = false) {
+            try {
+                const clienteSelect = document.getElementById('clienteSelect');
+                if (!clienteSelect) {
+                    console.error("Elemento clienteSelect não encontrado!");
+                    return;
+                }
+
+                clientes = await obterTodosClientesDoIndexedDB();
+
+                if (moverParaTopo && clienteSelecionado) {
+                    const clienteIndex = clientes.findIndex(c => c.id == clienteSelecionado);
+                    if (clienteIndex > -1) {
+                        const cliente = clientes.splice(clienteIndex, 1)[0];
+                        clientes.unshift(cliente);
+                    }
+                }
+
+                clienteSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+
+                if (clientes.length > 0) {
+                    clienteSelect.classList.remove('hidden');
+                    clientes.forEach(cliente => {
+                        const option = document.createElement('option');
+                        option.value = cliente.id;
+                        option.textContent = cliente.nome;
+                        clienteSelect.appendChild(option);
+                    });
+
+                    if (clienteSelecionado) {
+                        clienteSelect.value = clienteSelecionado;
+                    } else {
+                        clienteSelect.value = clientes[0].id;
+                    }
+
+                    onClienteChange();
+                    mostrarEditIconContainer(true);
+                } else {
+                    clienteSelect.classList.add('hidden');
+                    mostrarEditIconContainer(false);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar clientes:", error);
+            }
+        }
+
+        function onClienteChange() {
+            clienteSelecionado = document.getElementById('clienteSelect').value;
+            loadMedidas();
+            if (clienteSelecionado) {
+                mostrarEditIconContainer(true);
+            } else {
+                mostrarEditIconContainer(false);
+            }
+        }
+
+        function mostrarEditIconContainer(exibir) {
+            const editIconContainer = document.getElementById('editIconContainer');
+            if (exibir && document.getElementById('clienteSelect').value) {
+                editIconContainer.classList.remove('hidden');
+            } else {
+                editIconContainer.classList.add('hidden');
+            }
+        }
+
+
+
         function updateResultado(m2, preco) {
             const resultadoDesktop = document.getElementById('resultadoDesktop');
             const resultadoMobile = document.getElementById('resultadoMobile');
@@ -446,6 +514,10 @@
             if (salvarInfoUsuarioBtn) {
                 salvarInfoUsuarioBtn.addEventListener('click', salvarInformacoesUsuario);
             }
+            const popupClienteBtnSalvar = document.getElementById('popupClienteBtnSalvar');
+    if (popupClienteBtnSalvar) {
+        popupClienteBtnSalvar.addEventListener('click', salvarCliente);
+    }
 
             const addNewClienteBtn = document.getElementById('addNewClienteBtn');
             const addNewClienteBtnDesktop = document.getElementById('addNewClienteBtnDesktop');
@@ -514,87 +586,35 @@
         }
 
         async function salvarCliente(event) {
-            event.preventDefault();
+    event.preventDefault();
 
-            const nome = document.getElementById('popupClienteNome').value.trim();
-            const telefone = document.getElementById('popupClienteTelefone').value.trim();
-            const endereco = document.getElementById('popupClienteEndereco').value.trim();
-            const cpf = document.getElementById('popupClienteCPF').value.trim();
-            const cnpj = document.getElementById('popupClienteCNPJ').value.trim();
+    const nome = document.getElementById('popupClienteNome').value.trim();
+    const telefone = document.getElementById('popupClienteTelefone').value.trim();
+    const endereco = document.getElementById('popupClienteEndereco').value.trim();
+    const cpf = document.getElementById('popupClienteCPF').value.trim();
+    const cnpj = document.getElementById('popupClienteCNPJ').value.trim();
 
-            const novoCliente = { nome, telefone, endereco, cpf, cnpj };
+    const novoCliente = { nome, telefone, endereco, cpf, cnpj };
 
-            try {
-                let clienteId;
-                if (clienteSelecionado) {
-                    await atualizarClienteNoIndexedDB(clienteSelecionado, novoCliente);
-                    clienteId = clienteSelecionado;
-                } else {
-                    clienteId = await salvarClienteNoIndexedDB(novoCliente);
-                }
-
-                await carregarClientes(clienteId, true);
-                fecharPopup();
-                alert("Cliente salvo com sucesso!");
-            } catch (error) {
-                console.error("Erro ao salvar cliente:", error);
-                alert("Ocorreu um erro ao salvar o cliente. Por favor, tente novamente.");
-            }
+    try {
+        let clienteId;
+        if (clienteSelecionado) {
+            await atualizarClienteNoIndexedDB(clienteSelecionado, novoCliente);
+            clienteId = clienteSelecionado;
+        } else {
+            clienteId = await salvarClienteNoIndexedDB(novoCliente);
         }
 
-        async function carregarClientes(clienteSelecionado = '', moverParaTopo = false) {
-            clientes = await obterTodosClientesDoIndexedDB();
-            
-            if (moverParaTopo && clienteSelecionado) {
-                const clienteIndex = clientes.findIndex(c => c.id == clienteSelecionado);
-                if (clienteIndex > -1) {
-                    const cliente = clientes.splice(clienteIndex, 1)[0];
-                    clientes.unshift(cliente);
-                }
-            }
+        await carregarClientes(clienteId, true);
+        fecharPopup();
+        alert("Cliente salvo com sucesso!");
+    } catch (error) {
+        console.error("Erro ao salvar cliente:", error);
+        alert("Ocorreu um erro ao salvar o cliente. Por favor, tente novamente.");
+    }
+}
 
-            clienteSelect.innerHTML = '';
-            if (clientes.length > 0) {
-                clienteSelect.classList.remove('hidden');
-                clientes.forEach(cliente => {
-                    const option = document.createElement('option');
-                    option.value = cliente.id;
-                    option.textContent = cliente.nome;
-                    clienteSelect.appendChild(option);
-                });
-
-                if (clienteSelecionado) {
-                    clienteSelect.value = clienteSelecionado;
-                } else {
-                    clienteSelect.value = clientes[0].id;
-                }
-
-                onClienteChange();
-                mostrarEditIconContainer(true);
-            } else {
-                clienteSelect.classList.add('hidden');
-                mostrarEditIconContainer(false);
-            }
-        }
-
-        function onClienteChange() {
-            clienteSelecionado = clienteSelect.value;
-            loadMedidas();
-            if (clienteSelecionado) {
-                mostrarEditIconContainer(true);
-            } else {
-                mostrarEditIconContainer(false);
-            }
-        }
-
-        function mostrarEditIconContainer(exibir) {
-            const editIconContainer = document.getElementById('editIconContainer');
-            if (exibir && clienteSelect.value) {
-                editIconContainer.classList.remove('hidden');
-            } else {
-                editIconContainer.classList.add('hidden');
-            }
-        }
+  
 
         function fecharPopup() {
             const popupCliente = document.getElementById('popupCliente');
@@ -820,7 +840,7 @@
                         pelicula = peliculasPersonalizadas.find(p => p.nome === peliculaNome);
                     }
 
-                    const area = largura * altura * quantidade;
+                    const area = largura * altura * quantidade; // Convertendo para m²
                     const preco = pelicula ? area * pelicula.preco : 0;
 
                     totalM2 += area;
