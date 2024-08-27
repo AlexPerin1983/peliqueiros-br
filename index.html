@@ -1494,47 +1494,60 @@
                     }
 
                     Object.entries(medidasPorPelicula).forEach(([peliculaNome, medidas], index) => {
-                        if (index > 0) y = addPage(++pageNumber);
-                        y = addMedidasTable(medidas, peliculaNome);
-                        
-                        const totalPelicula = {
-                            totalM2: medidas.reduce((sum, group) => sum + (parseFloat(group.querySelector('input[placeholder="M²"]').value) || 0), 0),
-                            precoTotal: medidas.reduce((sum, group) => {
-                                const area = parseFloat(group.querySelector('input[placeholder="M²"]').value) || 0;
-                                const pelicula = peliculas.find(p => p.nome === peliculaNome);
-                                return sum + (pelicula ? area * pelicula.preco : 0);
-                            }, 0)
-                        };
+    if (index > 0) y = addPage(++pageNumber);
+    y = addMedidasTable(medidas, peliculaNome);
+    
+    const totalPelicula = {
+        totalM2: medidas.reduce((sum, group) => sum + (parseFloat(group.querySelector('input[placeholder="M²"]').value) || 0), 0),
+        precoTotal: medidas.reduce((sum, group) => {
+            const area = parseFloat(group.querySelector('input[placeholder="M²"]').value) || 0;
+            const pelicula = peliculas.find(p => p.nome === peliculaNome);
+            return sum + (pelicula ? area * pelicula.preco : 0);
+        }, 0)
+    };
 
-                        y += 5;
-                        doc.setDrawColor(...colors.secondary);
-                        doc.setLineWidth(0.5);
-                        doc.line(margin, y, pageWidth - margin, y);
-                        doc.setTextColor(...colors.secondary);
-                        doc.setFont("helvetica", 'bold');
-                        doc.setFontSize(10);
-                        safeText(`Subtotal ${peliculaNome}:`, margin, y + 10);
-                        safeText(`Área: ${totalPelicula.totalM2.toFixed(2)} m²`, pageWidth / 2, y + 10);
-                        safeText(`R$ ${totalPelicula.precoTotal.toFixed(2)}`, pageWidth - margin, y + 10, { align: 'right' });
-                        y += 15;
-                    });
+    // Acumular nos totais gerais
+    totaisGerais.totalM2 += totalPelicula.totalM2;
+    totaisGerais.precoTotal += totalPelicula.precoTotal;
 
-                    if (y > pageHeight - 60) {
-                        y = addPage(++pageNumber);
-                    }
+    // Adicionar logs para debug
+    console.log("Subtotal:", peliculaNome, "Área:", totalPelicula.totalM2, "Preço:", totalPelicula.precoTotal);
+    console.log("Total Geral Atualizado:", totaisGerais.totalM2, totaisGerais.precoTotal);
 
-                    y = addSectionTitle("Total Geral do Orçamento", y);
-                    y += 10;
-                    doc.setDrawColor(...colors.primary);
-                    doc.setLineWidth(1);
-                    doc.line(margin, y, pageWidth - margin, y);
-                    y += 5;
-                    doc.setTextColor(...colors.primary);
-                    doc.setFont("helvetica", 'bold');
-                    doc.setFontSize(12);
-                    safeText("Total Geral:", margin, y + 10);
-                    safeText(`Área Total: ${totaisGerais.totalM2.toFixed(2)} m²`, margin, y + 20);
-                    safeText(`Preço Total: R$ ${totaisGerais.precoTotal.toFixed(2)}`, pageWidth - margin, y + 20, { align: 'right' });
+    y += 5;
+    doc.setDrawColor(...colors.secondary);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageWidth - margin, y);
+    doc.setTextColor(...colors.secondary);
+    doc.setFont("helvetica", 'bold');
+    doc.setFontSize(10);
+    safeText(`Subtotal ${peliculaNome}:`, margin, y + 10);
+    safeText(`Área: ${totalPelicula.totalM2.toFixed(2)} m²`, pageWidth / 2, y + 10);
+    safeText(`R$ ${totalPelicula.precoTotal.toFixed(2)}`, pageWidth - margin, y + 10, { align: 'right' });
+    y += 15;
+});
+
+// Adicionar logs antes de exibir os totais gerais no PDF
+console.log("Final Total Geral:", totaisGerais.totalM2, totaisGerais.precoTotal);
+
+if (y > pageHeight - 60) {
+    y = addPage(++pageNumber);
+}
+
+y = addSectionTitle("Total Geral do Orçamento", y);
+y += 10;
+doc.setDrawColor(...colors.primary);
+doc.setLineWidth(1);
+doc.line(margin, y, pageWidth - margin, y);
+y += 5;
+doc.setTextColor(...colors.primary);
+doc.setFont("helvetica", 'bold');
+doc.setFontSize(12);
+safeText("Total Geral:", margin, y + 10);
+safeText(`Área Total: ${totaisGerais.totalM2.toFixed(2)} m²`, margin, y + 20);
+safeText(`Preço Total: R$ ${totaisGerais.precoTotal.toFixed(2)}`, pageWidth - margin, y + 20, { align: 'right' });
+
+
                     y += 30;
 
                     y = addPage(++pageNumber);
