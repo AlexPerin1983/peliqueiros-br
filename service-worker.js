@@ -2,10 +2,10 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('app-cache').then((cache) => {
       return cache.addAll([
-        '/teste-pwa/',
-        '/teste-pwa/index.html',
-        '/teste-pwa/icons/menor.png',
-        '/teste-pwa/icons/maior.png',
+        '/peliqueiros-br/',
+        '/peliqueiros-br/index.html',
+        '/peliqueiros-br/icons/menor.png',
+        '/peliqueiros-br/icons/maior.png',
         // Adicione outros recursos necessários para o funcionamento offline aqui
       ]);
     })
