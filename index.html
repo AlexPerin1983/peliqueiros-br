@@ -11,7 +11,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <link rel="icon" href="icons/peliqueiros.png" type="image/png">
-    <link rel="manifest" href="/teste-pwa/manifest.json">
+    <link rel="manifest" href="/peliqueiros-br/manifest.json">
     <meta name="theme-color" content="#000000">
     <script>
         tailwind.config = {
@@ -185,7 +185,7 @@
     <script>
         // Registro do Service Worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/teste-pwa/service-worker.js')
+            navigator.serviceWorker.register('/peliqueiros-br/service-worker.js')
                 .then(function (registration) {
                     console.log('Service Worker registrado com sucesso:', registration);
                 })
