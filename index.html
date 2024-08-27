@@ -160,8 +160,7 @@
                 </div>
             </div>
             <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
-                <button type="submit" form="userForm" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">Salvar</button>
-            </div>
+                <button id="saveUserInfoButton" type="submit" form="userForm" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">Salvar</button>
         </div>
     </div>
 
@@ -510,10 +509,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            const salvarInfoUsuarioBtn = document.getElementById('saveButton');
-            if (salvarInfoUsuarioBtn) {
-                salvarInfoUsuarioBtn.addEventListener('click', salvarInformacoesUsuario);
-            }
+    const salvarInfoUsuarioBtn = document.getElementById('saveUserInfoButton');
+    if (salvarInfoUsuarioBtn) {
+        salvarInfoUsuarioBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Previne o envio do formulário
+            salvarInformacoesUsuario();
+        });
+    }
             const popupClienteBtnSalvar = document.getElementById('popupClienteBtnSalvar');
     if (popupClienteBtnSalvar) {
         popupClienteBtnSalvar.addEventListener('click', salvarCliente);
