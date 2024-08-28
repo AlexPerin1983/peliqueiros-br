@@ -701,39 +701,44 @@
             }
             calculateTotal();
         }
-
         function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '', peliculaSelecionada = '') {
     const container = document.getElementById('medidasContainer');
     const medidaGroup = document.createElement('div');
-            medidaGroup.classList.add('bg-white', 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2');
+    medidaGroup.classList.add('bg-white', 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2');
+    
+    // Determinar se este grupo deve ter a cor de fundo zebrada
+    const isZebra = container.children.length % 2 === 0;
+    const zebraClass = isZebra ? 'bg-gray-300' : 'bg-white';
+    
+    medidaGroup.classList.add(zebraClass, 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2', 'mb-2');
 
-            medidaGroup.innerHTML = `
-                <div class="flex items-center space-x-1">
-                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-0">
-                    <input type="number" placeholder="L" value="${largura}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 largura-input" oninput="atualizarTotal(this)" maxlength="3">
-                    <input type="number" placeholder="A" value="${altura}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 altura-input" oninput="atualizarTotal(this)" maxlength="3">
-                    <input type="number" placeholder="Q" value="${quantidade}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 quantidade-input" oninput="atualizarTotal(this)" maxlength="3">
-                    <input type="text" placeholder="M²" disabled class="w-1/4 p-1 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
-                </div>
-                <div class="flex items-center space-x-1">
-                    <select class="flex-grow min-w-0 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 pelicula-select" onchange="onPeliculaChange(this)">
-                        ${peliculas.map(p => `<option value="${p.nome}" ${p.nome === peliculaSelecionada ? 'selected' : ''}>${p.nome}</option>`).join('')}
-                        <option value="Outra">Outra</option>
-                    </select>
-                    <button class="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="duplicarGrupo(this)">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                    <button class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="toggleAdditionalFields(this)">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="deleteMedidaGroup(this)">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-                <div class="additional-fields hidden mt-2">
-                    <select onchange="calculateTotal()" class="w-full p-2 mb-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
-                        <option value="">Ambiente</option>
-                     <option value="Academia" ${ambiente === "Academia" ? 'selected' : ''}>Academia</option>
+    medidaGroup.innerHTML = `
+        <div class="flex items-center space-x-1">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-0">
+            <input type="number" placeholder="L" value="${largura}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 largura-input" oninput="atualizarTotal(this)" maxlength="3">
+            <input type="number" placeholder="A" value="${altura}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 altura-input" oninput="atualizarTotal(this)" maxlength="3">
+            <input type="number" placeholder="Q" value="${quantidade}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 quantidade-input" oninput="atualizarTotal(this)" maxlength="3">
+            <input type="text" placeholder="M²" disabled class="w-1/4 p-1 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
+        </div>
+        <div class="flex items-center space-x-1">
+            <select class="flex-grow min-w-0 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 pelicula-select" onchange="onPeliculaChange(this)">
+                ${peliculas.map(p => `<option value="${p.nome}" ${p.nome === peliculaSelecionada ? 'selected' : ''}>${p.nome}</option>`).join('')}
+                <option value="Outra">Outra</option>
+            </select>
+            <button class="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="duplicarGrupo(this)">
+                <i class="fas fa-copy"></i>
+            </button>
+            <button class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="toggleAdditionalFields(this)">
+                <i class="fas fa-eye"></i>
+            </button>
+            <button class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="deleteMedidaGroup(this)">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+        <div class="additional-fields hidden mt-2">
+            <select onchange="calculateTotal()" class="w-full p-2 mb-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
+                <option value="">Ambiente</option>
+                 <option value="Academia" ${ambiente === "Academia" ? 'selected' : ''}>Academia</option>
 <option value="Adega" ${ambiente === "Adega" ? 'selected' : ''}>Adega</option>
 <option value="Área de Lazer" ${ambiente === "Área de Lazer" ? 'selected' : ''}>Área de Lazer</option>
 <option value="Área de Serviço" ${ambiente === "Área de Serviço" ? 'selected' : ''}>Área de Serviço</option>
@@ -844,14 +849,18 @@
 <option value="Vitrine" ${tipoAplicacao === "Vitrine" ? 'selected' : ''}>Vitrine</option>
 
                     </select>
-                </div>
-            `;
+        </div>
+    `;
 
-            container.insertBefore(medidaGroup, container.firstChild);
+    container.insertBefore(medidaGroup, container.firstChild);
 
-            const larguraInput = medidaGroup.querySelector('.largura-input');
-            const alturaInput = medidaGroup.querySelector('.altura-input');
-            const quantidadeInput = medidaGroup.querySelector('.quantidade-input');
+    const larguraInput = medidaGroup.querySelector('.largura-input');
+    const alturaInput = medidaGroup.querySelector('.altura-input');
+    const quantidadeInput = medidaGroup.querySelector('.quantidade-input');
+
+    // ... (resto do código permanece o mesmo)
+
+ 
 
             larguraInput.addEventListener('input', function () {
                 if (larguraInput.value.length >= 4) {
