@@ -1,4 +1,4 @@
-const CACHE_NAME = 'app-cache-v9'; // Altere o nome da versão do cache
+const CACHE_NAME = 'app-cache-v10'; // Nome do cache, altere a cada nova versão
 
 const urlsToCache = [
     '/peliqueiros-br/',
@@ -20,15 +20,6 @@ self.addEventListener('install', (event) => {
     self.skipWaiting(); // Força o Service Worker a ser ativado imediatamente
 });
 
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                return response || fetch(event.request);
-            })
-    );
-});
-
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -43,4 +34,19 @@ self.addEventListener('activate', (event) => {
         })
     );
     self.clients.claim(); // Força todas as abas a usar o novo Service Worker
+});
+
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            // Serve o arquivo em cache, se disponível; caso contrário, faz uma requisição
+            return response || fetch(event.request);
+        })
+    );
+});
+
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
