@@ -39,7 +39,7 @@
                 <!-- Cabeçalho -->
                 <div class="mb-4">
                     <div class="text-center mb-2">
-                        <h1 class="text-2xl sm:text-3xl font-montserrat text-gray-900 font-bold">Los_PelikeirOs</h1>
+                        <h1 class="text-2xl sm:text-3xl font-montserrat text-gray-900 font-bold">os_PelikOs</h1>
                     </div>
                     <div class="flex items-center space-x-2">
                         <select id="clienteSelect" class="flex-grow p-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="onClienteChange()">
@@ -194,14 +194,34 @@
     <script>
         // Registro do Service Worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/peliqueiros-br/service-worker.js')
-                .then(function (registration) {
-                    console.log('Service Worker registrado com sucesso:', registration);
-                })
-                .catch(function (error) {
-                    console.log('Falha ao registrar o Service Worker:', error);
-                });
+    navigator.serviceWorker.register('/peliqueiros-br/service-worker.js')
+    .then((registration) => {
+        // Verifica se há um service worker esperando para ser ativado
+        if (registration.waiting) {
+            notifyUserAboutUpdate(registration.waiting);
+            return;
         }
+
+        // Escuta atualizações no service worker
+        registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+
+            newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed') {
+                    // Se o novo service worker foi instalado e já está esperando
+                    if (navigator.serviceWorker.controller) {
+                        notifyUserAboutUpdate(newWorker);
+                    }
+                }
+            });
+        });
+    })
+    .catch((error) => {
+        console.error('Erro ao registrar o service worker:', error);
+    });
+}
+
+
 
         // Array de películas predefinidas
         const peliculasPredefinidas = [
@@ -266,6 +286,25 @@ function onTipoAplicacaoChange(select) {
     calculateTotal();
 }
 
+function notifyUserAboutUpdate(worker) {
+    const updateBar = document.createElement('div');
+    updateBar.innerText = "Nova versão disponível. Clique aqui para atualizar.";
+    updateBar.style.position = 'fixed';
+    updateBar.style.bottom = '0';
+    updateBar.style.left = '0';
+    updateBar.style.width = '100%';
+    updateBar.style.backgroundColor = '#f39c12';
+    updateBar.style.color = 'white';
+    updateBar.style.textAlign = 'center';
+    updateBar.style.padding = '10px';
+    updateBar.style.cursor = 'pointer';
+    updateBar.addEventListener('click', () => {
+        worker.postMessage({ type: 'SKIP_WAITING' });
+        window.location.reload();
+    });
+
+    document.body.appendChild(updateBar);
+}
 
 
 function abrirPopupAmbientePersonalizado() {
