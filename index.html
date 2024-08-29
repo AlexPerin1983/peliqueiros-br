@@ -768,6 +768,13 @@ value = '';
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+
+             // Adicionando evento para o botão de PDF da versão mobile
+    const generatePdfButtonMobile = document.getElementById('generatePdfButtonMobile');
+    if (generatePdfButtonMobile) {
+        generatePdfButtonMobile.addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
+    }
+    
     const salvarInfoUsuarioBtn = document.getElementById('saveUserInfoButton');
     if (salvarInfoUsuarioBtn) {
         salvarInfoUsuarioBtn.addEventListener('click', function(event) {
@@ -815,9 +822,7 @@ value = '';
             document.getElementById('generatePdfButton').addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
 
             const primaryColorPreview = document.getElementById('primaryColorPreview');
-            const secondaryColorPreview = document.getElementById
-
-('secondaryColorPreview');
+            const secondaryColorPreview = document.getElementById('secondaryColorPreview');
             const primaryColorInput = document.getElementById('primaryColor');
             const secondaryColorInput = document.getElementById('secondaryColor');
 
