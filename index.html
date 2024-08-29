@@ -1303,13 +1303,44 @@ async function obterClienteDoIndexedDB(id) {
             await objectStore.put({ id: 'status', ativado: false, inicioTeste: new Date().toISOString() });
         }
 
-        async function ativarAplicativo() {
-            const db = await abrirIndexedDB();
+     // Função ativarAplicativo permanece a mesma
+async function ativarAplicativo() {
+    console.log('Iniciando ativarAplicativo()');
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('ClientesDB', 7);
+        
+        request.onerror = (event) => {
+            console.error('Erro ao abrir o IndexedDB:', event.target.error);
+            reject('Erro ao abrir o IndexedDB');
+        };
+        
+        request.onsuccess = (event) => {
+            const db = event.target.result;
             const transaction = db.transaction(['verificacao'], 'readwrite');
-            const objectStore = transaction.objectStore('verificacao');
-            await objectStore.put({ id: 'status', ativado: true });
-            atualizarIconeVerificacao('ativado');
-        }
+            const store = transaction.objectStore('verificacao');
+            
+            const putRequest = store.put({ id: 'status', ativado: true });
+            
+            putRequest.onerror = (event) => {
+                console.error('Erro ao salvar status de ativação:', event.target.error);
+                reject('Erro ao salvar status de ativação');
+            };
+            
+            putRequest.onsuccess = () => {
+                console.log('Status de ativação salvo com sucesso');
+                resolve(true);
+            };
+        };
+        
+        request.onupgradeneeded = (event) => {
+            console.log('Atualizando estrutura do banco de dados');
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('verificacao')) {
+                db.createObjectStore('verificacao', { keyPath: 'id' });
+            }
+        };
+    });
+}
 
         function gerarFrasesAleatorias() {
             const frases = [];
@@ -1393,33 +1424,42 @@ async function obterClienteDoIndexedDB(id) {
             document.body.insertAdjacentHTML('beforeend', popupHTML);
 
             document.getElementById('verificarCodigo').addEventListener('click', async () => {
-                const codigoUsuario = document.getElementById('codigoAtivacao').value;
+    console.log('Botão de verificação clicado');
+    const codigoUsuario = document.getElementById('codigoAtivacao').value;
+    console.log('Código inserido:', codigoUsuario);
 
-                if (verificarCodigo(codigoUsuario, frasesGeradas)) {
-                    console.log('Código correto! Aplicativo ativado com sucesso');
-                    
-                    await ativarAplicativo();
-
-                    // Fechar o popup de maneira confiável
-                    const popup = document.getElementById('popupVerificacao');
-                    if (popup) {
-                        popup.style.display = 'none'; // Esconde o popup imediatamente
-                        popup.parentNode.removeChild(popup); // Remove o popup do DOM
-                    }
-
-                    // Liberar o acesso à página
-                    document.body.style.pointerEvents = 'auto';
-
-                    alert('Código correto! Aplicativo ativado com sucesso.');
-
-                    // Adicionar um pequeno atraso antes de recarregar a página
-                    setTimeout(() => {
-                        location.reload();
-                    }, 500); // 500ms de atraso
+    // Verifica se é a senha alternativa ou o código gerado
+    if (codigoUsuario === '987410' || verificarCodigo(codigoUsuario, frasesGeradas)) {
+        console.log('Código correto ou senha alternativa válida, tentando ativar o aplicativo');
+        try {
+            const resultado = await ativarAplicativo();
+            console.log('Resultado da ativação:', resultado);
+            
+            if (resultado) {
+                console.log('Aplicativo ativado com sucesso, tentando fechar o popup');
+                const popup = document.getElementById('popupVerificacao');
+                if (popup) {
+                    popup.style.display = 'none';
+                    console.log('Popup ocultado');
                 } else {
-                    alert('Código incorreto. Tente novamente.');
+                    console.log('Elemento do popup não encontrado');
                 }
-            });
+                
+                alert('Aplicativo ativado com sucesso! A página será recarregada.');
+                location.reload();
+            } else {
+                console.log('Falha na ativação do aplicativo');
+                alert('Ocorreu um erro ao ativar o aplicativo. Por favor, tente novamente.');
+            }
+        } catch (error) {
+            console.error('Erro durante a ativação:', error);
+            alert('Ocorreu um erro ao ativar o aplicativo. Por favor, tente novamente.');
+        }
+    } else {
+        console.log('Código incorreto');
+        alert('Código incorreto. Tente novamente.');
+    }
+});
         }
 
         async function verificarAtivacaoAntes(acao) {
