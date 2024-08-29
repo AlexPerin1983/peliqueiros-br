@@ -1,4 +1,5 @@
-const CACHE_NAME = 'app-cache-v3'; // Alterar versão quando atualizar a aplicação
+const CACHE_NAME = 'app-cache-v4'; // Altere o nome da versão do cache
+
 const urlsToCache = [
     '/peliqueiros-br/',
     '/peliqueiros-br/index.html',
@@ -16,6 +17,7 @@ self.addEventListener('install', (event) => {
                 return cache.addAll(urlsToCache);
             })
     );
+    self.skipWaiting(); // Força o Service Worker a ser ativado imediatamente
 });
 
 self.addEventListener('fetch', (event) => {
@@ -28,12 +30,11 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-    const cacheWhitelist = [CACHE_NAME];
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
-                    if (!cacheWhitelist.includes(cacheName)) {
+                    if (cacheName !== CACHE_NAME) {
                         console.log('Removendo cache antigo:', cacheName);
                         return caches.delete(cacheName);
                     }
@@ -41,4 +42,5 @@ self.addEventListener('activate', (event) => {
             );
         })
     );
+    self.clients.claim(); // Força todas as abas a usar o novo Service Worker
 });
