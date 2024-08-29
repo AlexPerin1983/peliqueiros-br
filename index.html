@@ -220,6 +220,34 @@
         let clientes = [];
         let clienteSelecionado = '';
 
+  
+// Arrays para ambientes e tipos de aplicação
+const ambientes = [
+    "Academia", "Adega", "Área de Lazer", "Área de Serviço", "Área Externa", "Auditório",
+    "Banheiro 1", "Banheiro 2", "Banheiro 3", "Banheiro de hóspedes", "Balcão", "Barbearia",
+    "Biblioteca", "Churrasqueira", "Closet", "Copa", "Corredor", "Cozinha", "Depósito",
+    "Despensa", "Elevador", "Escada", "Escritorio 1", "Escritorio 2", "Escritorio 3",
+    "Escritório", "Estúdio", "Garagem", "Garita", "Garita fundo", "Hall de Entrada",
+    "Home Theater", "Jardim", "Lavanderia", "Loja", "Outros", "Piscina", "Portaria",
+    "Portaria fundo", "Porão", "Quarto 1", "Quarto 2", "Quarto 3", "Quarto 4",
+    "Quarto de Bebê", "Quarto de hóspedes", "Quarto empregada", "Quarto principal",
+    "Recepção", "Refeitorio", "Sala", "Sala de Espera", "Sala de estar", "Sala de jantar",
+    "Sala de Jogos", "Sala de Música", "Salão de Festas", "Sotão", "Spa", "Suite 1",
+    "Suite 2", "Terraço", "Varanda", "Varanda Gourmet"
+];
+
+const tiposAplicacao = [
+    "Armário", "Balcão", "Basculante", "Box de banheiro", "Cobogó de Vidro",
+    "Cobertura de Vidro", "Divisória de Vidro", "Espelho", "Fachada",
+    "Fachada de Vidro Estrutural", "Guarda-corpo", "Guarda-Corpo de Vidro",
+    "Janela Basculante", "Janela de correr", "Janela de Guilhotina", "Janela Integrada",
+    "Janela Maxim-Ar", "Janela pivotante", "Janela Padrão", "Janelão",
+    "Janelas Panorâmicas", "Outras", "Painel de Vidro", "Parede divisória", "Parapeito",
+    "Porta", "Porta Balcão", "Porta de Correr", "Porta de Correr Embutida",
+    "Porta de Vidro Acústico", "Porta de Vidro Laminado", "Porta Dupla",
+    "Porta Dupla C/P e F", "Porta Pivotante", "Sacada de Vidro", "Tampo de mesa",
+    "Teto", "Toldo de Vidro", "Veneziana", "Vidro Curvo", "Vidro Fixo", "Vitrine"
+];
 
         async function carregarClientes(clienteSelecionado = '', moverParaTopo = false) {
             try {
@@ -775,115 +803,20 @@ async function obterClienteDoIndexedDB(id) {
         <div class="additional-fields hidden mt-2">
             <select onchange="calculateTotal()" class="w-full p-2 mb-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
                 <option value="">Ambiente</option>
-                 <option value="Academia" ${ambiente === "Academia" ? 'selected' : ''}>Academia</option>
-<option value="Adega" ${ambiente === "Adega" ? 'selected' : ''}>Adega</option>
-<option value="Área de Lazer" ${ambiente === "Área de Lazer" ? 'selected' : ''}>Área de Lazer</option>
-<option value="Área de Serviço" ${ambiente === "Área de Serviço" ? 'selected' : ''}>Área de Serviço</option>
-<option value="Área Externa" ${ambiente === "Área Externa" ? 'selected' : ''}>Área Externa</option>
-<option value="Auditório" ${ambiente === "Auditório" ? 'selected' : ''}>Auditório</option>
-<option value="Banheiro 1" ${ambiente === "Banheiro 1" ? 'selected' : ''}>Banheiro 1</option>
-<option value="Banheiro 2" ${ambiente === "Banheiro 2" ? 'selected' : ''}>Banheiro 2</option>
-<option value="Banheiro 3" ${ambiente === "Banheiro 3" ? 'selected' : ''}>Banheiro 3</option>
-<option value="Banheiro de hóspedes" ${ambiente === "Banheiro de hóspedes" ? 'selected' : ''}>Banheiro de hóspedes</option>
-<option value="Balcão" ${ambiente === "Balcão" ? 'selected' : ''}>Balcão</option>
-<option value="Biblioteca" ${ambiente === "Biblioteca" ? 'selected' : ''}>Biblioteca</option>
-<option value="Churrasqueira" ${ambiente === "Churrasqueira" ? 'selected' : ''}>Churrasqueira</option>
-<option value="Closet" ${ambiente === "Closet" ? 'selected' : ''}>Closet</option>
-<option value="Copa" ${ambiente === "Copa" ? 'selected' : ''}>Copa</option>
-<option value="Corredor" ${ambiente === "Corredor" ? 'selected' : ''}>Corredor</option>
-<option value="Cozinha" ${ambiente === "Cozinha" ? 'selected' : ''}>Cozinha</option>
-<option value="Depósito" ${ambiente === "Depósito" ? 'selected' : ''}>Depósito</option>
-<option value="Despensa" ${ambiente === "Despensa" ? 'selected' : ''}>Despensa</option>
-<option value="Elevador" ${ambiente === "Elevador" ? 'selected' : ''}>Elevador</option>
-<option value="Escada" ${ambiente === "Escada" ? 'selected' : ''}>Escada</option>
-<option value="Escritorio 1" ${ambiente === "Escritorio 1" ? 'selected' : ''}>Escritorio 1</option>
-<option value="Escritorio 2" ${ambiente === "Escritorio 2" ? 'selected' : ''}>Escritorio 2</option>
-<option value="Escritorio 3" ${ambiente === "Escritorio 3" ? 'selected' : ''}>Escritorio 3</option>
-<option value="Escritório" ${ambiente === "Escritório" ? 'selected' : ''}>Escritório</option>
-<option value="Estúdio" ${ambiente === "Estúdio" ? 'selected' : ''}>Estúdio</option>
-<option value="Garagem" ${ambiente === "Garagem" ? 'selected' : ''}>Garagem</option>
-<option value="Garita" ${ambiente === "Garita" ? 'selected' : ''}>Garita</option>
-<option value="Garita fundo" ${ambiente === "Garita fundo" ? 'selected' : ''}>Garita fundo</option>
-<option value="Hall de Entrada" ${ambiente === "Hall de Entrada" ? 'selected' : ''}>Hall de Entrada</option>
-<option value="Home Theater" ${ambiente === "Home Theater" ? 'selected' : ''}>Home Theater</option>
-<option value="Jardim" ${ambiente === "Jardim" ? 'selected' : ''}>Jardim</option>
-<option value="Lavanderia" ${ambiente === "Lavanderia" ? 'selected' : ''}>Lavanderia</option>
-<option value="Loja" ${ambiente === "Loja" ? 'selected' : ''}>Loja</option>
-<option value="Outros" ${ambiente === "Outros" ? 'selected' : ''}>Outros</option>
-<option value="Piscina" ${ambiente === "Piscina" ? 'selected' : ''}>Piscina</option>
-<option value="Portaria" ${ambiente === "Portaria" ? 'selected' : ''}>Portaria</option>
-<option value="Portaria fundo" ${ambiente === "Portaria fundo" ? 'selected' : ''}>Portaria fundo</option>
-<option value="Porão" ${ambiente === "Porão" ? 'selected' : ''}>Porão</option>
-<option value="Quarto 1" ${ambiente === "Quarto 1" ? 'selected' : ''}>Quarto 1</option>
-<option value="Quarto 2" ${ambiente === "Quarto 2" ? 'selected' : ''}>Quarto 2</option>
-<option value="Quarto 3" ${ambiente === "Quarto 3" ? 'selected' : ''}>Quarto 3</option>
-<option value="Quarto 4" ${ambiente === "Quarto 4" ? 'selected' : ''}>Quarto 4</option>
-<option value="Quarto de Bebê" ${ambiente === "Quarto de Bebê" ? 'selected' : ''}>Quarto de Bebê</option>
-<option value="Quarto de hóspedes" ${ambiente === "Quarto de hóspedes" ? 'selected' : ''}>Quarto de hóspedes</option>
-<option value="Quarto empregada" ${ambiente === "Quarto empregada" ? 'selected' : ''}>Quarto empregada</option>
-<option value="Quarto principal" ${ambiente === "Quarto principal" ? 'selected' : ''}>Quarto principal</option>
-<option value="Recepção" ${ambiente === "Recepção" ? 'selected' : ''}>Recepção</option>
-<option value="Refeitorio" ${ambiente === "Refeitorio" ? 'selected' : ''}>Refeitorio</option>
-<option value="Sala" ${ambiente === "Sala" ? 'selected' : ''}>Sala</option>
-<option value="Sala de Espera" ${ambiente === "Sala de Espera" ? 'selected' : ''}>Sala de Espera</option>
-<option value="Sala de estar" ${ambiente === "Sala de estar" ? 'selected' : ''}>Sala de estar</option>
-<option value="Sala de jantar" ${ambiente === "Sala de jantar" ? 'selected' : ''}>Sala de jantar</option>
-<option value="Sala de Jogos" ${ambiente === "Sala de Jogos" ? 'selected' : ''}>Sala de Jogos</option>
-<option value="Sala de Música" ${ambiente === "Sala de Música" ? 'selected' : ''}>Sala de Música</option>
-<option value="Salão de Festas" ${ambiente === "Salão de Festas" ? 'selected' : ''}>Salão de Festas</option>
-<option value="Sotão" ${ambiente === "Sotão" ? 'selected' : ''}>Sotão</option>
-<option value="Spa" ${ambiente === "Spa" ? 'selected' : ''}>Spa</option>
-<option value="Suite 1" ${ambiente === "Suite 1" ? 'selected' : ''}>Suite 1</option>
-<option value="Suite 2" ${ambiente === "Suite 2" ? 'selected' : ''}>Suite 2</option>
-<option value="Terraço" ${ambiente === "Terraço" ? 'selected' : ''}>Terraço</option>
-<option value="Varanda" ${ambiente === "Varanda" ? 'selected' : ''}>Varanda</option>
-<option value="Varanda Gourmet" ${ambiente === "Varanda Gourmet" ? 'selected' : ''}>Varanda Gourmet</option>
+               
+                ${ambientes.map(amb => `<option value="${amb}" ${amb === ambiente ? 'selected' : ''}>${amb}</option>`).join('')}
+
+
+
 
                     </select>
                     <select onchange="calculateTotal()" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
                   <option value="">Tipo de Aplicação</option>
-<option value="Armário" ${tipoAplicacao === "Armário" ? 'selected' : ''}>Armário</option>
-<option value="Balcão" ${tipoAplicacao === "Balcão" ? 'selected' : ''}>Balcão</option>
-<option value="Basculante" ${tipoAplicacao === "Basculante" ? 'selected' : ''}>Basculante</option>
-<option value="Box de banheiro" ${tipoAplicacao === "Box de banheiro" ? 'selected' : ''}>Box de banheiro</option>
-<option value="Cobogó de Vidro" ${tipoAplicacao === "Cobogó de Vidro" ? 'selected' : ''}>Cobogó de Vidro</option>
-<option value="Cobertura de Vidro" ${tipoAplicacao === "Cobertura de Vidro" ? 'selected' : ''}>Cobertura de Vidro</option>
-<option value="Divisória de Vidro" ${tipoAplicacao === "Divisória de Vidro" ? 'selected' : ''}>Divisória de Vidro</option>
-<option value="Espelho" ${tipoAplicacao === "Espelho" ? 'selected' : ''}>Espelho</option>
-<option value="Fachada" ${tipoAplicacao === "Fachada" ? 'selected' : ''}>Fachada</option>
-<option value="Fachada de Vidro Estrutural" ${tipoAplicacao === "Fachada de Vidro Estrutural" ? 'selected' : ''}>Fachada de Vidro Estrutural</option>
-<option value="Guarda-corpo" ${tipoAplicacao === "Guarda-corpo" ? 'selected' : ''}>Guarda-corpo</option>
-<option value="Guarda-Corpo de Vidro" ${tipoAplicacao === "Guarda-Corpo de Vidro" ? 'selected' : ''}>Guarda-Corpo de Vidro</option>
-<option value="Janela Basculante" ${tipoAplicacao === "Janela Basculante" ? 'selected' : ''}>Janela Basculante</option>
-<option value="Janela de correr" ${tipoAplicacao === "Janela de correr" ? 'selected' : ''}>Janela de correr</option>
-<option value="Janela de Guilhotina" ${tipoAplicacao === "Janela de Guilhotina" ? 'selected' : ''}>Janela de Guilhotina</option>
-<option value="Janela Integrada" ${tipoAplicacao === "Janela Integrada" ? 'selected' : ''}>Janela Integrada</option>
-<option value="Janela Maxim-Ar" ${tipoAplicacao === "Janela Maxim-Ar" ? 'selected' : ''}>Janela Maxim-Ar</option>
-<option value="Janela pivotante" ${tipoAplicacao === "Janela pivotante" ? 'selected' : ''}>Janela pivotante</option>
-<option value="Janela Padrão" ${tipoAplicacao === "Janela Padrão" ? 'selected' : ''}>Janela Padrão</option>
-<option value="Janelão" ${tipoAplicacao === "Janelão" ? 'selected' : ''}>Janelão</option>
-<option value="Janelas Panorâmicas" ${tipoAplicacao === "Janelas Panorâmicas" ? 'selected' : ''}>Janelas Panorâmicas</option>
-<option value="Outras" ${tipoAplicacao === "Outras" ? 'selected' : ''}>Outras</option>
-<option value="Painel de Vidro" ${tipoAplicacao === "Painel de Vidro" ? 'selected' : ''}>Painel de Vidro</option>
-<option value="Parede divisória" ${tipoAplicacao === "Parede divisória" ? 'selected' : ''}>Parede divisória</option>
-<option value="Parapeito" ${tipoAplicacao === "Parapeito" ? 'selected' : ''}>Parapeito</option>
-<option value="Porta" ${tipoAplicacao === "Porta" ? 'selected' : ''}>Porta</option>
-<option value="Porta Balcão" ${tipoAplicacao === "Porta Balcão" ? 'selected' : ''}>Porta Balcão</option>
-<option value="Porta de Correr" ${tipoAplicacao === "Porta de Correr" ? 'selected' : ''}>Porta de Correr</option>
-<option value="Porta de Correr Embutida" ${tipoAplicacao === "Porta de Correr Embutida" ? 'selected' : ''}>Porta de Correr Embutida</option>
-<option value="Porta de Vidro Acústico" ${tipoAplicacao === "Porta de Vidro Acústico" ? 'selected' : ''}>Porta de Vidro Acústico</option>
-<option value="Porta de Vidro Laminado" ${tipoAplicacao === "Porta de Vidro Laminado" ? 'selected' : ''}>Porta de Vidro Laminado</option>
-<option value="Porta Dupla" ${tipoAplicacao === "Porta Dupla" ? 'selected' : ''}>Porta Dupla</option>
-<option value="Porta Dupla C/P e F" ${tipoAplicacao === "Porta Dupla C/P e F" ? 'selected' : ''}>Porta Dupla C/P e F</option>
-<option value="Porta Pivotante" ${tipoAplicacao === "Porta Pivotante" ? 'selected' : ''}>Porta Pivotante</option>
-<option value="Sacada de Vidro" ${tipoAplicacao === "Sacada de Vidro" ? 'selected' : ''}>Sacada de Vidro</option>
-<option value="Tampo de mesa" ${tipoAplicacao === "Tampo de mesa" ? 'selected' : ''}>Tampo de mesa</option>
-<option value="Teto" ${tipoAplicacao === "Teto" ? 'selected' : ''}>Teto</option>
-<option value="Toldo de Vidro" ${tipoAplicacao === "Toldo de Vidro" ? 'selected' : ''}>Toldo de Vidro</option>
-<option value="Veneziana" ${tipoAplicacao === "Veneziana" ? 'selected' : ''}>Veneziana</option>
-<option value="Vidro Curvo" ${tipoAplicacao === "Vidro Curvo" ? 'selected' : ''}>Vidro Curvo</option>
-<option value="Vidro Fixo" ${tipoAplicacao === "Vidro Fixo" ? 'selected' : ''}>Vidro Fixo</option>
-<option value="Vitrine" ${tipoAplicacao === "Vitrine" ? 'selected' : ''}>Vitrine</option>
+
+
+                ${tiposAplicacao.map(tipo => `<option value="${tipo}" ${tipo === tipoAplicacao ? 'selected' : ''}>${tipo}</option>`).join('')}
+
+
 
                     </select>
         </div>
