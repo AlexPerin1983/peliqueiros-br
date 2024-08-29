@@ -1,4 +1,4 @@
-const CACHE_NAME = 'app-cache-v2'; // Alterar versão quando atualizar a aplicação
+const CACHE_NAME = 'app-cache-v3'; // Alterar versão quando atualizar a aplicação
 const urlsToCache = [
     '/peliqueiros-br/',
     '/peliqueiros-br/index.html',
