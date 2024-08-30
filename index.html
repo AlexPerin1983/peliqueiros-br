@@ -246,9 +246,9 @@
   
 // Arrays para ambientes e tipos de aplicação
 const ambientes = [
-    "Academia", "Adega", "Área de Lazer", "Área de Serviço", "Área Externa", "Auditório",
-    "Banheiro 1", "Banheiro 2", "Banheiro 3", "Banheiro de hóspedes", "Balcão", "Barbearia",
-    "Biblioteca", "Churrasqueira", "Closet", "Copa", "Corredor", "Cozinha", "Depósito",
+    "Desconhecido", "Academia", "Adega", "Área de Lazer", "Área de Serviço", "Área Externa", "Auditório",
+    "Banheiro", "Banheiro 1", "Banheiro 2", "Banheiro3", "Balcão", "Barbearia",
+    "Biblioteca", "Churrasqueira", "Cinema", "Closet", "Copa", "Corredor", "Cozinha", "Depósito",
     "Despensa", "Elevador", "Escada", "Escritorio 1", "Escritorio 2", "Escritorio 3",
     "Escritório", "Estúdio", "Garagem", "Garita", "Garita fundo", "Hall de Entrada",
     "Home Theater", "Jardim", "Lavanderia", "Loja", "Outros", "Piscina", "Portaria",
@@ -260,7 +260,7 @@ const ambientes = [
 ];
 
 const tiposAplicacao = [
-    "Armário", "Balcão", "Basculante", "Box de banheiro", "Cobogó de Vidro",
+    "Desconhecido", "Armário", "Balcão", "Basculante", "Box de banheiro", "Cobogó de Vidro",
     "Cobertura de Vidro", "Divisória de Vidro", "Espelho", "Fachada",
     "Fachada de Vidro Estrutural", "Guarda-corpo", "Guarda-Corpo de Vidro",
     "Janela Basculante", "Janela de correr", "Janela de Guilhotina", "Janela Integrada",
@@ -774,7 +774,7 @@ value = '';
     if (generatePdfButtonMobile) {
         generatePdfButtonMobile.addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
     }
-    
+
     const salvarInfoUsuarioBtn = document.getElementById('saveUserInfoButton');
     if (salvarInfoUsuarioBtn) {
         salvarInfoUsuarioBtn.addEventListener('click', function(event) {
