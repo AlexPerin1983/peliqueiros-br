@@ -19,6 +19,21 @@
         #popupCliente, #popupUsuario {
             z-index: 10000; /* Elevando o nível do popup */
         }
+
+          /* Animação de carregamento */
+    .loader {
+        border: 8px solid #f3f3f3; /* Light grey */
+        border-top: 8px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     </style>
     <script>
         tailwind.config = {
@@ -51,6 +66,16 @@
                         <button id="addNewClienteBtnDesktop" class="hidden sm:block w-auto p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 shadow-md">
                             <i class="fas fa-user-plus mr-2"></i> Adicionar Cliente
                         </button>
+                    </div>
+
+                    <!-- ANIMAÇÃO ENTRADA CARREGANDO -->
+                    <div id="splash-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+                        <!-- Ícone do aplicativo -->
+                        <div class="flex flex-col items-center">
+                            <img src="path/to/your/icon.png" alt="App Icon" class="w-24 h-24">
+                            <!-- Animação de carregamento -->
+                            <div class="loader mt-4"></div>
+                        </div>
                     </div>
 
 <!-- Contêiner principal -->
@@ -234,7 +259,12 @@
     });
 }
 
-
+    // Remover a splash screen após o carregamento do aplicativo
+    window.addEventListener('load', () => {
+        const splashScreen = document.getElementById('splash-screen');
+        splashScreen.style.display = 'none'; // ou use uma animação para fade-out
+    });
+    
 
         // Array de películas predefinidas
         const peliculasPredefinidas = [
