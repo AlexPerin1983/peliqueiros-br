@@ -52,17 +52,32 @@
                             <i class="fas fa-user-plus mr-2"></i> Adicionar Cliente
                         </button>
                     </div>
-                    <div id="editIconContainer" class="hidden flex justify-end space-x-2 mt-2">
-                        <button onclick="abrirPopup('editar')" class="p-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300 shadow-sm">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="confirmClearMedidas()" class="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 shadow-sm">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                        <button onclick="abrirPopupUsuario()" class="p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-300 shadow-sm">
-                            <i class="fas fa-user-cog"></i>
-                        </button>
-                    </div>
+
+<!-- Contêiner principal -->
+<div class="flex items-center justify-between mt-2">
+    <!-- Ícone de Localização à Esquerda -->
+    <div class="flex items-center">
+        <button onclick="abrirMapa()" class="p-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300 shadow-sm">
+            <i class="fas fa-map-marker-alt"></i>
+        </button>
+    </div>
+
+    <!-- Ícones à Direita -->
+    <div id="editIconContainer" class="flex items-center space-x-2">
+        <button onclick="abrirPopup('editar')" class="p-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300 shadow-sm">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button onclick="confirmClearMedidas()" class="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 shadow-sm">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+        <button onclick="abrirPopupUsuario()" class="p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-300 shadow-sm">
+            <i class="fas fa-user-cog"></i>
+        </button>
+    </div>
+</div>
+
+    
+                    
                 </div>
 
                 <!-- Conteúdo scrollável (grupos de medidas) -->
@@ -134,9 +149,7 @@
                                 </div>
                                 <div>
                                     <span class="text-sm text-gray-500">Secundária:</span>
-                                    <div id="secondaryColorPreview" class="w-8 h-8 rounded-full border border-gray-300 cursor-pointer
-
-"></div>
+                                    <div id="secondaryColorPreview" class="w-8 h-8 rounded-full border border-gray-300 cursor-pointer"></div>
                                     <input type="color" id="secondaryColor" class="hidden">
                                 </div>
                             </div>
@@ -271,6 +284,30 @@ const tiposAplicacao = [
     "Porta Dupla C/P e F", "Porta Pivotante", "Sacada de Vidro", "Tampo de mesa",
     "Teto", "Toldo de Vidro", "Veneziana", "Vidro Curvo", "Vidro Fixo", "Vitrine"
 ];
+
+
+//ABRIR GOOGLE MAPS
+function abrirMapa() {
+    const clienteId = document.getElementById('clienteSelect').value;
+    if (!clienteId) {
+        alert('Selecione um cliente.');
+        return;
+    }
+
+    obterClienteDoIndexedDB(clienteId).then(cliente => {
+        if (cliente && cliente.endereco) {
+            const endereco = encodeURIComponent(cliente.endereco);
+            const url = `https://www.google.com/maps/search/?api=1&query=${endereco}`;
+            window.open(url, '_blank');
+        } else {
+            alert('Endereço não encontrado para este cliente.');
+        }
+    }).catch(error => {
+        console.error('Erro ao abrir o mapa:', error);
+    });
+}
+
+
 //abrir popup ambiente
 function onAmbienteChange(select) {
     if (select.value === 'Outra') {
