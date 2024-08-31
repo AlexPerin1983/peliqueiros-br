@@ -586,10 +586,52 @@ async function atualizarSeletoresTiposAplicacao() {
         }
 
         $(document).ready(function () {
-            $('#popupClienteTelefone, #telefoneClienteInput').mask('(00) 00000-0000');
-            $('#popupClienteCPF, #cpfClienteInput').mask('000.000.000-00');
-            $('#popupClienteCNPJ, #cnpjClienteInput').mask('00.000.000/0000-00');
+    function formatarTelefone(telefone) {
+        let numeros = telefone.replace(/\D/g, '');
+        if (numeros.startsWith('55') && numeros.length > 11) {
+            numeros = numeros.slice(2);
+        }
+        if (numeros.length === 11) {
+            return `(${numeros.slice(0,2)}) ${numeros.slice(2,7)}-${numeros.slice(7)}`;
+        } else if (numeros.length === 10) {
+            return `(${numeros.slice(0,2)}) ${numeros.slice(2,6)}-${numeros.slice(6)}`;
+        } else {
+            return telefone;
+        }
+    }
+
+    function aplicarMascaraTelefone(elemento) {
+        $(elemento).on('paste', function(e) {
+            e.preventDefault();
+            let texto = (e.originalEvent || e).clipboardData.getData('text/plain');
+            $(this).val(formatarTelefone(texto));
         });
+
+        $(elemento).mask('(00) 00000-0000', {
+            onKeyPress: function(val, e, field, options) {
+                field.mask(val.length > 14 ? '(00) 00000-0000' : '(00) 0000-00009', options);
+            }
+        });
+    }
+
+    // Aplicar máscara para campos de telefone
+    aplicarMascaraTelefone('#popupClienteTelefone');
+    aplicarMascaraTelefone('#telefoneClienteInput');
+    aplicarMascaraTelefone('#phone'); // Campo de telefone no popup de usuário
+
+    // Máscaras para CPF e CNPJ
+    $('#popupClienteCPF, #cpfClienteInput').mask('000.000.000-00');
+    $('#popupClienteCNPJ, #cnpjClienteInput').mask('00.000.000/0000-00');
+
+    // Máscara para o campo CPF/CNPJ no popup de usuário
+    $('#cpfCnpj').mask('000.000.000-00', {
+        onKeyPress: function(cpfcnpj, e, field, options) {
+            var masks = ['000.000.000-000', '00.000.000/0000-00'];
+            var mask = (cpfcnpj.length > 14) ? masks[1] : masks[0];
+            $('#cpfCnpj').mask(mask, options);
+        }
+    });
+});
 
         function abrirPopup(acao) {
             console.log("Popup acionado para:", acao);
