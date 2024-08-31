@@ -18,14 +18,49 @@
 
 .select-wrapper {
     position: relative;
+    margin-bottom: 10px;
 }
 .search-input {
     width: 100%;
-    padding: 5px;
+    padding: 8px;
     margin-bottom: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+.custom-select {
+    position: relative;
+}
+
+.selected-option {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+.options-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+.option {
+    padding: 8px;
+    cursor: pointer;
+}
+.option:hover {
+    background-color: #f0f0f0;
+}
+.hidden {
+    display: none;
+}
+
         /* Certificando que o popup será sempre visível */
         #popupCliente, #popupUsuario {
             z-index: 10000; /* Elevando o nível do popup */
@@ -1113,7 +1148,7 @@ async function obterClienteDoIndexedDB(id) {
             calculateTotal();
         }
 
-// Função para criar seletor com pesquisa
+// Função atualizada para criar seletor com pesquisa
 function criarSeletorComPesquisa(seletor, opcoes) {
     const select = document.querySelector(seletor);
     if (!select) return;
@@ -1121,50 +1156,77 @@ function criarSeletorComPesquisa(seletor, opcoes) {
     const wrapper = document.createElement('div');
     wrapper.className = 'select-wrapper';
     select.parentNode.insertBefore(wrapper, select);
-    wrapper.appendChild(select);
 
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.placeholder = 'Pesquisar...';
     searchInput.className = 'search-input';
-    wrapper.insertBefore(searchInput, select);
+    wrapper.appendChild(searchInput);
 
-    const opcoesOriginais = Array.from(select.options).map(opt => opt.value);
+    const customSelect = document.createElement('div');
+    customSelect.className = 'custom-select';
+    wrapper.appendChild(customSelect);
 
-    function filtrarOpcoes() {
-        const termo = searchInput.value.toLowerCase();
-        const opcoesVisiveis = opcoes.filter(opcao => opcao.toLowerCase().includes(termo));
-        
-        select.innerHTML = '';
-        opcoesVisiveis.forEach(opcao => {
-            const option = document.createElement('option');
-            option.value = opcao;
-            option.textContent = opcao;
-            select.appendChild(option);
+    const selectedOption = document.createElement('div');
+    selectedOption.className = 'selected-option';
+    selectedOption.textContent = select.options[select.selectedIndex].textContent;
+    customSelect.appendChild(selectedOption);
+
+    const optionsList = document.createElement('div');
+    optionsList.className = 'options-list hidden';
+    customSelect.appendChild(optionsList);
+
+    function atualizarOpcoes(filtro = '') {
+        optionsList.innerHTML = '';
+        opcoes.forEach(opcao => {
+            if (opcao.toLowerCase().includes(filtro.toLowerCase())) {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = opcao;
+                optionElement.addEventListener('click', () => selecionarOpcao(opcao));
+                optionsList.appendChild(optionElement);
+            }
         });
-
-        if (opcoesOriginais.includes('Outra')) {
-            const outraOption = document.createElement('option');
-            outraOption.value = 'Outra';
-            outraOption.textContent = 'Outra';
-            select.appendChild(outraOption);
-        }
+        
+        const outraOption = document.createElement('div');
+        outraOption.className = 'option';
+        outraOption.textContent = 'Outra';
+        outraOption.addEventListener('click', () => selecionarOpcao('Outra'));
+        optionsList.appendChild(outraOption);
     }
 
-    searchInput.addEventListener('input', filtrarOpcoes);
-    select.addEventListener('change', function() {
-        if (this.value === 'Outra') {
+    function selecionarOpcao(opcao) {
+        selectedOption.textContent = opcao;
+        optionsList.classList.add('hidden');
+        select.value = opcao;
+        select.dispatchEvent(new Event('change'));
+
+        if (opcao === 'Outra') {
             if (seletor.includes('ambiente')) {
                 abrirPopupAmbientePersonalizado();
             } else if (seletor.includes('tipo-aplicacao')) {
                 abrirPopupTipoAplicacaoPersonalizado();
             }
         }
+    }
+
+    searchInput.addEventListener('input', () => {
+        atualizarOpcoes(searchInput.value);
+        optionsList.classList.remove('hidden');
     });
+
+    selectedOption.addEventListener('click', () => {
+        optionsList.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) {
+            optionsList.classList.add('hidden');
+        }
+    });
+
+    atualizarOpcoes();
 }
-
-
-
 
 // Função addMedidaGroup modificada
 function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '', peliculaSelecionada = '') {
@@ -1172,6 +1234,7 @@ function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isCh
     const medidaGroup = document.createElement('div');
     medidaGroup.classList.add('bg-white', 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2');
     
+    // Determinar se este grupo deve ter a cor de fundo zebrada
     const isZebra = container.children.length % 2 === 0;
     const zebraClass = isZebra ? 'bg-gray-300' : 'bg-white';
     
@@ -1201,22 +1264,34 @@ function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isCh
             </button>
         </div>
         <div class="additional-fields hidden mt-2">
-            <select class="ambiente-select w-full p-2 border border-gray-300 rounded-md mb-2">
-                ${ambientes.map(amb => `<option value="${amb}" ${amb === ambiente ? 'selected' : ''}>${amb}</option>`).join('')}
-                <option value="Outra">Outra</option>
-            </select>
-            <select class="tipo-aplicacao-select w-full p-2 border border-gray-300 rounded-md">
-                ${tiposAplicacao.map(tipo => `<option value="${tipo}" ${tipo === tipoAplicacao ? 'selected' : ''}>${tipo}</option>`).join('')}
-                <option value="Outra">Outra</option>
-            </select>
+            <div class="ambiente-select-wrapper"></div>
+            <div class="tipo-aplicacao-select-wrapper"></div>
         </div>
     `;
 
     container.insertBefore(medidaGroup, container.firstChild);
 
-    // Aplicar seletores com pesquisa
-    criarSeletorComPesquisa(medidaGroup.querySelector('.ambiente-select'), ambientes);
-    criarSeletorComPesquisa(medidaGroup.querySelector('.tipo-aplicacao-select'), tiposAplicacao);
+    const ambienteWrapper = medidaGroup.querySelector('.ambiente-select-wrapper');
+    const tipoAplicacaoWrapper = medidaGroup.querySelector('.tipo-aplicacao-select-wrapper');
+
+    const ambienteSelect = document.createElement('select');
+    ambienteSelect.className = 'ambiente-select w-full p-2 border border-gray-300 rounded-md mb-2';
+    ambienteSelect.innerHTML = `
+        ${ambientes.map(amb => `<option value="${amb}" ${amb === ambiente ? 'selected' : ''}>${amb}</option>`).join('')}
+        <option value="Outra">Outra</option>
+    `;
+    ambienteWrapper.appendChild(ambienteSelect);
+
+    const tipoAplicacaoSelect = document.createElement('select');
+    tipoAplicacaoSelect.className = 'tipo-aplicacao-select w-full p-2 border border-gray-300 rounded-md';
+    tipoAplicacaoSelect.innerHTML = `
+        ${tiposAplicacao.map(tipo => `<option value="${tipo}" ${tipo === tipoAplicacao ? 'selected' : ''}>${tipo}</option>`).join('')}
+        <option value="Outra">Outra</option>
+    `;
+    tipoAplicacaoWrapper.appendChild(tipoAplicacaoSelect);
+
+    criarSeletorComPesquisa(ambienteSelect, ambientes);
+    criarSeletorComPesquisa(tipoAplicacaoSelect, tiposAplicacao);
 
     const larguraInput = medidaGroup.querySelector('.largura-input');
     const alturaInput = medidaGroup.querySelector('.altura-input');
