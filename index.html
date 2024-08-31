@@ -15,6 +15,17 @@
     <link rel="manifest" href="/peliqueiros-br/manifest.json">
     <meta name="theme-color" content="#000000">
     <style>
+
+.select-wrapper {
+    position: relative;
+}
+.search-input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
         /* Certificando que o popup será sempre visível */
         #popupCliente, #popupUsuario {
             z-index: 10000; /* Elevando o nível do popup */
@@ -1101,12 +1112,66 @@ async function obterClienteDoIndexedDB(id) {
             }
             calculateTotal();
         }
-        function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '', peliculaSelecionada = '') {
+
+// Função para criar seletor com pesquisa
+function criarSeletorComPesquisa(seletor, opcoes) {
+    const select = document.querySelector(seletor);
+    if (!select) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'select-wrapper';
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(select);
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Pesquisar...';
+    searchInput.className = 'search-input';
+    wrapper.insertBefore(searchInput, select);
+
+    const opcoesOriginais = Array.from(select.options).map(opt => opt.value);
+
+    function filtrarOpcoes() {
+        const termo = searchInput.value.toLowerCase();
+        const opcoesVisiveis = opcoes.filter(opcao => opcao.toLowerCase().includes(termo));
+        
+        select.innerHTML = '';
+        opcoesVisiveis.forEach(opcao => {
+            const option = document.createElement('option');
+            option.value = opcao;
+            option.textContent = opcao;
+            select.appendChild(option);
+        });
+
+        if (opcoesOriginais.includes('Outra')) {
+            const outraOption = document.createElement('option');
+            outraOption.value = 'Outra';
+            outraOption.textContent = 'Outra';
+            select.appendChild(outraOption);
+        }
+    }
+
+    searchInput.addEventListener('input', filtrarOpcoes);
+    select.addEventListener('change', function() {
+        if (this.value === 'Outra') {
+            if (seletor.includes('ambiente')) {
+                abrirPopupAmbientePersonalizado();
+            } else if (seletor.includes('tipo-aplicacao')) {
+                abrirPopupTipoAplicacaoPersonalizado();
+            }
+        }
+    });
+}
+
+
+
+
+// Função addMedidaGroup modificada
+function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '', peliculaSelecionada = '') {
     const container = document.getElementById('medidasContainer');
     const medidaGroup = document.createElement('div');
     medidaGroup.classList.add('bg-white', 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2');
     
-    // Determinar se este grupo deve ter a cor de fundo zebrada
     const isZebra = container.children.length % 2 === 0;
     const zebraClass = isZebra ? 'bg-gray-300' : 'bg-white';
     
@@ -1133,55 +1198,67 @@ async function obterClienteDoIndexedDB(id) {
             </button>
             <button class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="deleteMedidaGroup(this)">
                 <i class="fas fa-trash-alt"></i>
-
-
             </button>
         </div>
         <div class="additional-fields hidden mt-2">
-                 <select class="flex-grow min-w-0 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 ambiente-select" onchange="onAmbienteChange(this)">
-    ${ambientes.map(amb => `<option value="${amb}">${amb}</option>`).join('')}
-    <option value="Outra">Outra</option>
-</select>
-
-<select class="flex-grow min-w-0 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 tipo-aplicacao-select" onchange="onTipoAplicacaoChange(this)">
-    ${tiposAplicacao.map(tipo => `<option value="${tipo}">${tipo}</option>`).join('')}
-    <option value="Outra">Outra</option>
-</select>
-
+            <select class="ambiente-select w-full p-2 border border-gray-300 rounded-md mb-2">
+                ${ambientes.map(amb => `<option value="${amb}" ${amb === ambiente ? 'selected' : ''}>${amb}</option>`).join('')}
+                <option value="Outra">Outra</option>
+            </select>
+            <select class="tipo-aplicacao-select w-full p-2 border border-gray-300 rounded-md">
+                ${tiposAplicacao.map(tipo => `<option value="${tipo}" ${tipo === tipoAplicacao ? 'selected' : ''}>${tipo}</option>`).join('')}
+                <option value="Outra">Outra</option>
+            </select>
+        </div>
     `;
 
     container.insertBefore(medidaGroup, container.firstChild);
+
+    // Aplicar seletores com pesquisa
+    criarSeletorComPesquisa(medidaGroup.querySelector('.ambiente-select'), ambientes);
+    criarSeletorComPesquisa(medidaGroup.querySelector('.tipo-aplicacao-select'), tiposAplicacao);
 
     const larguraInput = medidaGroup.querySelector('.largura-input');
     const alturaInput = medidaGroup.querySelector('.altura-input');
     const quantidadeInput = medidaGroup.querySelector('.quantidade-input');
 
-    // ... (resto do código permanece o mesmo)
-
- 
-
-            larguraInput.addEventListener('input', function () {
-                if (larguraInput.value.length >= 4) {
-                    alturaInput.focus();
-                }
-            });
-
-            alturaInput.addEventListener('input', function () {
-                if (alturaInput.value.length >= 4) {
-                    quantidadeInput.focus();
-                    setTimeout(() => {
-                        const length = quantidadeInput.value.length;
-                        quantidadeInput.setSelectionRange(length, length);
-                    }, 0);
-                }
-            });
-
-            if (isFirst) {
-                larguraInput.focus();
-            }
-
-            calculateTotal();
+    larguraInput.addEventListener('input', function () {
+        if (larguraInput.value.length >= 4) {
+            alturaInput.focus();
         }
+    });
+
+    alturaInput.addEventListener('input', function () {
+        if (alturaInput.value.length >= 4) {
+            quantidadeInput.focus();
+            setTimeout(() => {
+                const length = quantidadeInput.value.length;
+                quantidadeInput.setSelectionRange(length, length);
+            }, 0);
+        }
+    });
+
+    if (isFirst) {
+        larguraInput.focus();
+    }
+
+    calculateTotal();
+}
+
+// Evento DOMContentLoaded para inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    // Seu código existente de inicialização aqui...
+
+    // Aplicar seletores com pesquisa aos elementos existentes
+    document.querySelectorAll('.ambiente-select').forEach(select => {
+        criarSeletorComPesquisa(select, ambientes);
+    });
+    document.querySelectorAll('.tipo-aplicacao-select').forEach(select => {
+        criarSeletorComPesquisa(select, tiposAplicacao);
+    });
+
+    // Outras inicializações que você possa ter...
+});
 
         function atualizarTotal(input) {
     const group = input.closest('.bg-white');
