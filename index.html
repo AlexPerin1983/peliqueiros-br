@@ -338,7 +338,7 @@ function abrirMapa() {
 }
 
 
-//abrir popup ambiente
+// Funções para adicionar opções personalizadas
 function onAmbienteChange(select) {
     if (select.value === 'Outra') {
         abrirPopupAmbientePersonalizado();
@@ -380,9 +380,7 @@ function abrirPopupAmbientePersonalizado() {
             <div class="bg-white p-6 rounded-lg shadow-lg relative max-w-md w-full">
                 <h2 class="text-xl font-semibold mb-4">Adicionar Ambiente Personalizado</h2>
                 <input type="text" id="nomeAmbientePersonalizado" class="w-full p-2 mb-4 border border-gray-300 rounded-md" placeholder="Nome do Ambiente">
-                <button id="salvarAmbientePersonalizado" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">Salvar Ambiente</button
-
->
+                <button id="salvarAmbientePersonalizado" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">Salvar Ambiente</button>
                 <button onclick="fecharPopupAmbientePersonalizado()" class="mt-2 w-full p-3 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition duration-300">Cancelar</button>
             </div>
         </div>
@@ -424,9 +422,8 @@ function fecharPopupTipoAplicacaoPersonalizado() {
 
 async function salvarAmbientePersonalizado() {
     const nome = document.getElementById('nomeAmbientePersonalizado').value.trim();
-
     if (nome) {
-        const ambiente = { nome }; // Objeto contendo a propriedade 'nome'
+        const ambiente = { nome };
         await salvarAmbienteNoIndexedDB(ambiente);
         fecharPopupAmbientePersonalizado();
         await atualizarSeletoresAmbientes();
@@ -435,7 +432,6 @@ async function salvarAmbientePersonalizado() {
         alert('Por favor, preencha o campo corretamente.');
     }
 }
-
 
 async function salvarTipoAplicacaoPersonalizado() {
     const nome = document.getElementById('nomeTipoAplicacaoPersonalizado').value.trim();
@@ -448,6 +444,8 @@ async function salvarTipoAplicacaoPersonalizado() {
         alert('Por favor, preencha o campo corretamente.');
     }
 }
+
+
 
 async function salvarAmbienteNoIndexedDB(ambiente) {
     const db = await abrirIndexedDB();
@@ -474,6 +472,8 @@ async function salvarTipoAplicacaoNoIndexedDB(tipoAplicacao) {
     });
 }
 
+
+
 async function atualizarSeletoresAmbientes() {
     const ambientesPersonalizados = await carregarAmbientesPersonalizadosDoIndexedDB();
     const seletores = document.querySelectorAll('.ambiente-select');
@@ -495,7 +495,6 @@ async function atualizarSeletoresTiposAplicacao() {
         seletor.value = selectedValue;
     });
 }
-
 
         async function carregarClientes(clienteSelecionado = '', moverParaTopo = false) {
             try {
@@ -785,6 +784,13 @@ value = '';
 
                 request.onupgradeneeded = event => {
                     const db = event.target.result;
+                    if (!db.objectStoreNames.contains('ambientes_personalizados')) {
+                db.createObjectStore('ambientes_personalizados', { keyPath: 'nome' });
+            }
+            if (!db.objectStoreNames.contains('tipos_aplicacao_personalizados')) {
+                db.createObjectStore('tipos_aplicacao_personalizados', { keyPath: 'nome' });
+            }
+
                     if (!db.objectStoreNames.contains('usuario')) {
                         db.createObjectStore('usuario', { keyPath: 'id' });
                     }
@@ -814,28 +820,29 @@ value = '';
 
 
         async function carregarAmbientesPersonalizadosDoIndexedDB() {
-            const db = await abrirIndexedDB();
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['ambientes_personalizados'], 'readonly');
-                const store = transaction.objectStore('ambientes_personalizados');
-                const request = store.getAll();
+    const db = await abrirIndexedDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['ambientes_personalizados'], 'readonly');
+        const store = transaction.objectStore('ambientes_personalizados');
+        const request = store.getAll();
 
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
 
-        async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
-            const db = await abrirIndexedDB();
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['tipos_aplicacao_personalizados'], 'readonly');
-                const store = transaction.objectStore('tipos_aplicacao_personalizados');
-                const request = store.getAll();
+async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
+    const db = await abrirIndexedDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['tipos_aplicacao_personalizados'], 'readonly');
+        const store = transaction.objectStore('tipos_aplicacao_personalizados');
+        const request = store.getAll();
 
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
 
 
 
