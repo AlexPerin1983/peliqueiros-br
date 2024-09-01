@@ -819,7 +819,8 @@ value = '';
         }
 
 
-        async function carregarAmbientesPersonalizadosDoIndexedDB() {
+        // Funções auxiliares que você já deve ter, mas incluídas aqui para completude
+async function carregarAmbientesPersonalizadosDoIndexedDB() {
     const db = await abrirIndexedDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(['ambientes_personalizados'], 'readonly');
@@ -842,7 +843,6 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
         request.onerror = () => reject(request.error);
     });
 }
-
 
 
 
@@ -884,8 +884,19 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+    // Função para inicializar dados assíncronos
+    async function inicializarDados() {
+        const ambientesPersonalizados = await carregarAmbientesPersonalizadosDoIndexedDB();
+        const tiposAplicacaoPersonalizados = await carregarTiposAplicacaoPersonalizadosDoIndexedDB();
 
-             // Adicionando evento para o botão de PDF da versão mobile
+        ambientes = [...ambientes, ...ambientesPersonalizados.map(a => a.nome)];
+        tiposAplicacao = [...tiposAplicacao, ...tiposAplicacaoPersonalizados.map(t => t.nome)];
+    }
+
+    // Inicializar dados assíncronos
+    inicializarDados();
+
+    // Adicionando evento para o botão de PDF da versão mobile
     const generatePdfButtonMobile = document.getElementById('generatePdfButtonMobile');
     if (generatePdfButtonMobile) {
         generatePdfButtonMobile.addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
@@ -898,64 +909,76 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
             salvarInformacoesUsuario();
         });
     }
-            const popupClienteBtnSalvar = document.getElementById('popupClienteBtnSalvar');
+
+    const popupClienteBtnSalvar = document.getElementById('popupClienteBtnSalvar');
     if (popupClienteBtnSalvar) {
         popupClienteBtnSalvar.addEventListener('click', salvarCliente);
     }
 
-            const addNewClienteBtn = document.getElementById('addNewClienteBtn');
-            const addNewClienteBtnDesktop = document.getElementById('addNewClienteBtnDesktop');
+    const addNewClienteBtn = document.getElementById('addNewClienteBtn');
+    const addNewClienteBtnDesktop = document.getElementById('addNewClienteBtnDesktop');
 
-            if (addNewClienteBtn) {
-                addNewClienteBtn.addEventListener('click', function () {
-                    abrirPopup('adicionar');
-                });
-            }
-
-            if (addNewClienteBtnDesktop) {
-                addNewClienteBtnDesktop.addEventListener('click', function () {
-                    abrirPopup('adicionar');
-                });
-            }
-
-            const logoUsuario = document.getElementById('logo');
-            if (logoUsuario) {
-                logoUsuario.addEventListener('change', function (event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const previewLogo = document.getElementById('logoPreview');
-                            previewLogo.src = e.target.result;
-                            previewLogo.style.display = 'block';
-                        }
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-
-            carregarClientes();
-            document.getElementById('generatePdfButton').addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
-
-            const primaryColorPreview = document.getElementById('primaryColorPreview');
-            const secondaryColorPreview = document.getElementById('secondaryColorPreview');
-            const primaryColorInput = document.getElementById('primaryColor');
-            const secondaryColorInput = document.getElementById('secondaryColor');
-
-            primaryColorPreview.addEventListener('click', () => primaryColorInput.click());
-            secondaryColorPreview.addEventListener('click', () => secondaryColorInput.click());
-
-            primaryColorInput.addEventListener('change', (e) => {
-                primaryColorPreview.style.backgroundColor = e.target.value;
-            });
-
-            secondaryColorInput.addEventListener('change', (e) => {
-                secondaryColorPreview.style.backgroundColor = e.target.value;
-            });
-
-            carregarClientes();
-            carregarPeliculasPersonalizadas();
+    if (addNewClienteBtn) {
+        addNewClienteBtn.addEventListener('click', function () {
+            abrirPopup('adicionar');
         });
+    }
+
+    if (addNewClienteBtnDesktop) {
+        addNewClienteBtnDesktop.addEventListener('click', function () {
+            abrirPopup('adicionar');
+        });
+    }
+
+    const logoUsuario = document.getElementById('logo');
+    if (logoUsuario) {
+        logoUsuario.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const previewLogo = document.getElementById('logoPreview');
+                    previewLogo.src = e.target.result;
+                    previewLogo.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    carregarClientes();
+    document.getElementById('generatePdfButton').addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
+
+    const primaryColorPreview = document.getElementById('primaryColorPreview');
+    const secondaryColorPreview = document.getElementById('secondaryColorPreview');
+    const primaryColorInput = document.getElementById('primaryColor');
+    const secondaryColorInput = document.getElementById('secondaryColor');
+
+    primaryColorPreview.addEventListener('click', () => primaryColorInput.click());
+    secondaryColorPreview.addEventListener('click', () => secondaryColorInput.click());
+
+    primaryColorInput.addEventListener('change', (e) => {
+        primaryColorPreview.style.backgroundColor = e.target.value;
+    });
+
+    secondaryColorInput.addEventListener('change', (e) => {
+        secondaryColorPreview.style.backgroundColor = e.target.value;
+    });
+
+    carregarClientes();
+    carregarPeliculasPersonalizadas();
+            
+
+    // Inicializar seletores dinâmicos para todos os grupos de medidas existentes
+    const medidasContainer = document.getElementById('medidasContainer');
+    if (medidasContainer) {
+        const gruposMedidas = medidasContainer.querySelectorAll('.bg-white');
+        gruposMedidas.forEach(grupo => {
+            addDynamicSelectorsToMedidaGroup(grupo);
+        });
+    }
+});
+    
 
         // ... [O código continua com as funções restantes]
         async function carregarDadosCliente(clienteId) {
@@ -1076,22 +1099,23 @@ async function obterClienteDoIndexedDB(id) {
             calculateTotal();
         }
 
-        async function saveMedidas() {
-            const cliente = clienteSelect.value;
-            if (!cliente) return;
+        // Atualizar a função saveMedidas para usar os novos seletores
+async function saveMedidas() {
+    const cliente = clienteSelect.value;
+    if (!cliente) return;
 
-            const medidaGroups = document.querySelectorAll('#medidasContainer > div');
-            const medidas = Array.from(medidaGroups).map(group => ({
-                largura: group.querySelector('.largura-input').value,
-                altura: group.querySelector('.altura-input').value,
-                quantidade: group.querySelector('.quantidade-input').value,
-                ambiente: group.querySelector('.additional-fields select:nth-of-type(1)').value,
-                tipoAplicacao: group.querySelector('.additional-fields select:nth-of-type(2)').value,
-                pelicula: group.querySelector('.pelicula-select').value
-            }));
+    const medidaGroups = document.querySelectorAll('#medidasContainer > div');
+    const medidas = Array.from(medidaGroups).map(group => ({
+        largura: group.querySelector('.largura-input').value,
+        altura: group.querySelector('.altura-input').value,
+        quantidade: group.querySelector('.quantidade-input').value,
+        ambiente: group.querySelector('.additional-fields input[placeholder="Selecione ou digite o ambiente"]').value,
+        tipoAplicacao: group.querySelector('.additional-fields input[placeholder="Selecione ou digite o tipo de aplicação"]').value,
+        pelicula: group.querySelector('.pelicula-select').value
+    }));
 
-            await salvarMedidasNoIndexedDB(cliente, medidas);
-        }
+    await salvarMedidasNoIndexedDB(cliente, medidas);
+}
 
         async function loadMedidas() {
             const cliente = clienteSelect.value;
@@ -1108,12 +1132,124 @@ async function obterClienteDoIndexedDB(id) {
             }
             calculateTotal();
         }
-        function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '', peliculaSelecionada = '') {
+
+
+
+      // Função para normalizar o texto (para comparações case-insensitive)
+function normalizeText(text) {
+    return text.toLowerCase().trim();
+}
+
+// Função para normalizar "banheiro"
+function normalizeBanheiro(value) {
+    return normalizeText(value) === 'banheiro' ? 'Banheiro' : value;
+}
+
+// Função para criar um seletor dinâmico
+function createDynamicSelector(type, options, placeholder) {
+    const container = document.createElement('div');
+    container.className = 'relative w-full';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'w-full p-2 border border-gray-300 rounded-md';
+    input.placeholder = placeholder;
+
+    const dropdown = document.createElement('ul');
+    dropdown.className = 'absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto hidden';
+
+    container.appendChild(input);
+    container.appendChild(dropdown);
+
+    let currentOptions = options;
+
+    input.addEventListener('input', function() {
+        const value = this.value.trim();
+        updateDropdown(value, type);
+    });
+
+    input.addEventListener('focus', function() {
+        updateDropdown(this.value.trim(), type);
+    });
+
+    function updateDropdown(value, type) {
+        dropdown.innerHTML = '';
+        dropdown.classList.remove('hidden');
+
+        const normalizedValue = normalizeText(value);
+        const filteredOptions = currentOptions.filter(option => 
+            normalizeText(option).includes(normalizedValue)
+        );
+
+        if (filteredOptions.length === 0 && value) {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Adicionar "${normalizeBanheiro(value)}"`;
+            listItem.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+            listItem.addEventListener('click', async () => {
+                const normalizedNewValue = normalizeBanheiro(value);
+                if (!currentOptions.some(opt => normalizeText(opt) === normalizeText(normalizedNewValue))) {
+                    await saveNewOption(type, normalizedNewValue);
+                    currentOptions.push(normalizedNewValue);
+                }
+                input.value = normalizedNewValue;
+                dropdown.classList.add('hidden');
+                calculateTotal(); // Atualiza o total após adicionar nova opção
+            });
+            dropdown.appendChild(listItem);
+        } else {
+            filteredOptions.forEach(option => {
+                const listItem = document.createElement('li');
+                listItem.textContent = option;
+                listItem.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+                listItem.addEventListener('click', () => {
+                    input.value = option;
+                    dropdown.classList.add('hidden');
+                    calculateTotal(); // Atualiza o total após selecionar uma opção
+                });
+                dropdown.appendChild(listItem);
+            });
+        }
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!container.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+
+    return container;
+}
+
+// Função para salvar nova opção no IndexedDB
+async function saveNewOption(type, value) {
+    const db = await abrirIndexedDB();
+    const transaction = db.transaction([`${type}_personalizados`], 'readwrite');
+    const store = transaction.objectStore(`${type}_personalizados`);
+    await store.put({ nome: value });
+}
+
+// Função para adicionar os seletores dinâmicos ao grupo de medidas
+function addDynamicSelectorsToMedidaGroup(group) {
+    const additionalFields = group.querySelector('.additional-fields');
+    additionalFields.innerHTML = ''; // Limpa os campos existentes
+
+    const ambienteSelector = createDynamicSelector('ambientes', ambientes, 'Selecione ou digite o ambiente');
+    const tipoAplicacaoSelector = createDynamicSelector('tipos_aplicacao', tiposAplicacao, 'Selecione ou digite o tipo de aplicação');
+
+    additionalFields.appendChild(ambienteSelector);
+    additionalFields.appendChild(tipoAplicacaoSelector);
+}
+
+
+
+
+// Atualizar a função addMedidaGroup para usar os novos seletores dinâmicos
+function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '', peliculaSelecionada = '') {
+    console.log("Adicionando novo grupo de medidas");
     const container = document.getElementById('medidasContainer');
     const medidaGroup = document.createElement('div');
     medidaGroup.classList.add('bg-white', 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2');
     
-    // Determinar se este grupo deve ter a cor de fundo zebrada
     const isZebra = container.children.length % 2 === 0;
     const zebraClass = isZebra ? 'bg-gray-300' : 'bg-white';
     
@@ -1140,55 +1276,62 @@ async function obterClienteDoIndexedDB(id) {
             </button>
             <button class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="deleteMedidaGroup(this)">
                 <i class="fas fa-trash-alt"></i>
-
-
             </button>
         </div>
         <div class="additional-fields hidden mt-2">
-                 <select class="flex-grow min-w-0 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 ambiente-select" onchange="onAmbienteChange(this)">
-    ${ambientes.map(amb => `<option value="${amb}">${amb}</option>`).join('')}
-    <option value="Outra">Outra</option>
-</select>
-
-<select class="flex-grow min-w-0 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 tipo-aplicacao-select" onchange="onTipoAplicacaoChange(this)">
-    ${tiposAplicacao.map(tipo => `<option value="${tipo}">${tipo}</option>`).join('')}
-    <option value="Outra">Outra</option>
-</select>
-
+        </div>
     `;
 
     container.insertBefore(medidaGroup, container.firstChild);
+
+    const additionalFields = medidaGroup.querySelector('.additional-fields');
+    addDynamicSelectorsToMedidaGroup(medidaGroup);
+
+    // Definir valores para os seletores dinâmicos
+    if (ambiente) {
+        const ambienteInput = additionalFields.querySelector('input[placeholder="Selecione ou digite o ambiente"]');
+        if (ambienteInput) {
+            ambienteInput.value = ambiente;
+            const event = new Event('input', { bubbles: true });
+            ambienteInput.dispatchEvent(event);
+        }
+    }
+    if (tipoAplicacao) {
+        const tipoAplicacaoInput = additionalFields.querySelector('input[placeholder="Selecione ou digite o tipo de aplicação"]');
+        if (tipoAplicacaoInput) {
+            tipoAplicacaoInput.value = tipoAplicacao;
+            const event = new Event('input', { bubbles: true });
+            tipoAplicacaoInput.dispatchEvent(event);
+        }
+    }
 
     const larguraInput = medidaGroup.querySelector('.largura-input');
     const alturaInput = medidaGroup.querySelector('.altura-input');
     const quantidadeInput = medidaGroup.querySelector('.quantidade-input');
 
-    // ... (resto do código permanece o mesmo)
-
- 
-
-            larguraInput.addEventListener('input', function () {
-                if (larguraInput.value.length >= 4) {
-                    alturaInput.focus();
-                }
-            });
-
-            alturaInput.addEventListener('input', function () {
-                if (alturaInput.value.length >= 4) {
-                    quantidadeInput.focus();
-                    setTimeout(() => {
-                        const length = quantidadeInput.value.length;
-                        quantidadeInput.setSelectionRange(length, length);
-                    }, 0);
-                }
-            });
-
-            if (isFirst) {
-                larguraInput.focus();
-            }
-
-            calculateTotal();
+    larguraInput.addEventListener('input', function () {
+        if (larguraInput.value.length >= 4) {
+            alturaInput.focus();
         }
+    });
+
+    alturaInput.addEventListener('input', function () {
+        if (alturaInput.value.length >= 4) {
+            quantidadeInput.focus();
+            setTimeout(() => {
+                const length = quantidadeInput.value.length;
+                quantidadeInput.setSelectionRange(length, length);
+            }, 0);
+        }
+    });
+
+    if (isFirst) {
+        larguraInput.focus();
+    }
+
+    calculateTotal();
+    console.log("Grupo de medidas adicionado com sucesso");
+}
 
         function atualizarTotal(input) {
     const group = input.closest('.bg-white');
@@ -1201,44 +1344,48 @@ async function obterClienteDoIndexedDB(id) {
     calculateTotal();
 }
 
-        function duplicarGrupo(button) {
-            const group = button.closest('.bg-white');
-            const largura = group.querySelector('.largura-input').value || '';
-            const altura = group.querySelector('.altura-input').value || '';
-            const quantidade = group.querySelector('.quantidade-input').value || '';
-            const ambiente = group.querySelector('.additional-fields select:nth-of-type(1)').value || '';
-            const tipoAplicacao = group.querySelector('.additional-fields select:nth-of-type(2)').value || '';
-            const peliculaSelecionada = group.querySelector('.pelicula-select').value || '';
+      // Função para duplicar um grupo de medidas
+function duplicarGrupo(button) {
+    const group = button.closest('.bg-white');
+    const largura = group.querySelector('.largura-input').value || '';
+    const altura = group.querySelector('.altura-input').value || '';
+    const quantidade = group.querySelector('.quantidade-input').value || '';
+    const ambiente = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o ambiente"]').value || '';
+    const tipoAplicacao = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o tipo de aplicação"]').value || '';
+    const peliculaSelecionada = group.querySelector('.pelicula-select').value || '';
 
-            addMedidaGroup(true, largura, altura, quantidade, true, ambiente, tipoAplicacao, peliculaSelecionada);
+    addMedidaGroup(true, largura, altura, quantidade, true, ambiente, tipoAplicacao, peliculaSelecionada);
 
-            const container = document.getElementById('medidasContainer');
-            const firstGroup = container.firstChild;
-            const larguraInput = firstGroup.querySelector('.largura-input');
-            larguraInput.focus();
-        }
+    const container = document.getElementById('medidasContainer');
+    const firstGroup = container.firstChild;
+    const larguraInput = firstGroup.querySelector('.largura-input');
+    larguraInput.focus();
 
-        function duplicarMedidas() {
-            const medidaGroups = Array.from(document.querySelectorAll('#medidasContainer > div'));
+    calculateTotal();
+}
 
-            medidaGroups.reverse().forEach(group => {
-                const largura = group.querySelector('.largura-input').value || '';
-                const altura = group.querySelector('.altura-input').value || '';
-                const quantidade = group.querySelector('.quantidade-input').value || '';
-                const ambiente = group.querySelector('.additional-fields select:nth-of-type(1)').value || '';
-                const tipoAplicacao = group.querySelector('.additional-fields select:nth-of-type(2)').value || '';
-                const peliculaSelecionada = group.querySelector('.pelicula-select').value || '';
+   // Função para duplicar todas as medidas
+function duplicarMedidas() {
+    const medidaGroups = Array.from(document.querySelectorAll('#medidasContainer > div'));
 
-                addMedidaGroup(false, largura, altura, quantidade, true, ambiente, tipoAplicacao, peliculaSelecionada);
-            });
+    medidaGroups.reverse().forEach(group => {
+        const largura = group.querySelector('.largura-input').value || '';
+        const altura = group.querySelector('.altura-input').value || '';
+        const quantidade = group.querySelector('.quantidade-input').value || '';
+        const ambiente = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o ambiente"]').value || '';
+        const tipoAplicacao = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o tipo de aplicação"]').value || '';
+        const peliculaSelecionada = group.querySelector('.pelicula-select').value || '';
 
-            const container = document.getElementById('medidasContainer');
-            const firstGroup = container.firstChild;
-            const larguraInput = firstGroup.querySelector('.largura-input');
-            larguraInput.focus();
+        addMedidaGroup(false, largura, altura, quantidade, true, ambiente, tipoAplicacao, peliculaSelecionada);
+    });
 
-            calculateTotal();
-        }
+    const container = document.getElementById('medidasContainer');
+    const firstGroup = container.firstChild;
+    const larguraInput = firstGroup.querySelector('.largura-input');
+    larguraInput.focus();
+
+    calculateTotal();
+}
 
         function deleteMedidaGroup(button) {
             if (confirm('Tem certeza que deseja excluir este grupo de medidas?')) {
@@ -1669,416 +1816,409 @@ async function ativarAplicativo() {
 
         // Função para gerar PDF
         async function generatePDF_v3_0() {
+    try {
+        const clienteNome = clienteSelect.value;
+        if (!clienteNome) {
+            alert('Selecione um cliente.');
+            return;
+        }
+
+        const cliente = clientes.find(c => c.id == clienteNome);
+        if (!cliente) {
+            alert('Informações do cliente não encontradas.');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+        const margin = 15;
+
+        const infoUsuario = await obterInformacoesUsuarioDoIndexedDB();
+        const colors = {
+            primary: hexToRgb(infoUsuario.cores?.primaria || '#0056b3'),
+            secondary: hexToRgb(infoUsuario.cores?.secundaria || '#17a2b8'),
+            text: [33, 37, 41],
+            lightGray: [248, 249, 250],
+            white: [255, 255, 255]
+        };
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
+        }
+
+        function safeText(text, x, y, options = {}) {
+            if (typeof text !== 'string') text = String(text || '');
+            if (typeof x !== 'number' || typeof y !== 'number') {
+                console.error('Coordenadas inválidas:', x, y);
+                return;
+            }
             try {
-                const clienteNome = clienteSelect.value;
-                if (!clienteNome) {
-                    alert('Selecione um cliente.');
-                    return;
-                }
+                doc.text(text, x, y, options);
+            } catch (error) {
+                console.error('Erro ao adicionar texto:', error, 'Texto:', text, 'Coordenadas:', x, y);
+            }
+        }
 
-                const cliente = clientes.find(c => c.id == clienteNome);
-                if (!cliente) {
-                    alert('Informações do cliente não encontradas.');
-                    return;
-                }
-
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-
-                const pageWidth = doc.internal.pageSize.width;
-                const pageHeight = doc.internal.pageSize.height;
-                const margin = 15;
-
-                const infoUsuario = await obterInformacoesUsuarioDoIndexedDB();
-                const colors = {
-                    primary: hexToRgb(infoUsuario.cores?.primaria || '#0056b3'),
-                    secondary: hexToRgb(infoUsuario.cores?.secundaria || '#17a2b8'),
-                    text: [33, 37, 41],
-                    lightGray: [248, 249, 250],
-                    white: [255, 255, 255]
-                };
-
-                function hexToRgb(hex) {
-                    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
-                }
-
-                function safeText(text, x, y, options = {}) {
-                    if (typeof text !== 'string') text = String(text);
-                    if (typeof x !== 'number' || typeof y !== 'number') {
-                        console.error('Coordenadas inválidas:', x, y);
-                        return;
-                    }
-                    try {
-                        doc.text(text, x, y, options);
-                    } catch (error) {
-                        console.error('Erro ao adicionar texto:', error, 'Texto:', text, 'Coordenadas:', x, y);
-                    }
-                }
-
-                async function addLogo(x, y, maxWidth, maxHeight) {
-                    if (infoUsuario.logo) {
-                        try {
-                            const img = new Image();
-                            img.src = infoUsuario.logo;
-                            await new Promise((resolve, reject) => {
-                                img.onload = resolve;
-                                img.onerror = reject;
-                            });
-                            let imgWidth = img.width;
-                            let imgHeight = img.height;
-                            const imgRatio = imgWidth / imgHeight;
-                            const boxRatio = maxWidth / maxHeight;
-                            if (imgRatio > boxRatio) {
-                                imgWidth = maxWidth;
-                                imgHeight = maxWidth / imgRatio;
-                            } else {
-                                imgHeight = maxHeight;
-                                imgWidth = maxHeight * imgRatio;
-                            }
-                            const offsetX = x + (maxWidth - imgWidth) / 2;
-                            const offsetY = y + (maxHeight - imgHeight) / 2;
-                            await doc.addImage(infoUsuario.logo, 'PNG', offsetX, offsetY, imgWidth, imgHeight);
-                        } catch (error) {
-                            console.error("Erro ao adicionar a logo:", error);
-                            doc.setFontSize(12);
-                            safeText("LOGO", x + maxWidth / 2, y + maxHeight / 2, { align: 'center', baseline: 'middle' });
-                        }
-                    } else {
-                        doc.setFontSize(12);
-                        safeText("LOGO", x + maxWidth / 2, y + maxHeight / 2, { align: 'center', baseline: 'middle' });
-                    }
-                }
-
-                function addFooter(pageNumber) {
-                    doc.setFillColor(...colors.primary);
-                    doc.rect(0, pageHeight - 10, pageWidth, 10, 'F');
-                    doc.setTextColor(...colors.white);
-                    doc.setFontSize(8);
-                    safeText(infoUsuario.empresa, margin, pageHeight - 3);
-                    safeText(infoUsuario.telefone, pageWidth / 2, pageHeight - 3, { align: 'center' });
-                    safeText(`Página ${pageNumber}`, pageWidth - margin, pageHeight - 3, { align: 'right' });
-                }
-
-                function addPage(pageNumber) {
-                    doc.addPage();
-                    addFooter(pageNumber);
-                    return margin + 10;
-                }
-
-                function addSectionTitle(title, y) {
-                    doc.setDrawColor(...colors.primary);
-                    doc.setLineWidth(0.5);
-                    doc.line(margin, y, pageWidth - margin, y);
-                    doc.setTextColor(...colors.primary);
-                    doc.setFont("helvetica", 'bold');
-                    doc.setFontSize(14);
-                    safeText(title, margin, y + 10);
-                    return y + 20;
-                }
-
-                async function addCover() {
-                    doc.setFillColor(...colors.white);
-                    doc.rect(0, 0, pageWidth, pageHeight, 'F');
-                    doc.setFillColor(...colors.primary);
-                    doc.rect(0, 0, 60, pageHeight, 'F');
-                    await addLogo(10, 20, 40, 40);
-                    doc.setTextColor(...colors.primary);
-                    doc.setFont("helvetica", 'bold');
-                    doc.setFontSize(24);
-                    safeText("PROPOSTA DE", 70, 40);
-                    safeText("ORÇAMENTO", 70, 55);
-                    doc.setTextColor(...colors.secondary);
-                    doc.setFont("helvetica", 'italic');
-                    doc.setFontSize(14);
-                    safeText("Soluções em Películas de Alta Qualidade", 70, 70);
-                    doc.setTextColor(...colors.text);
-                    doc.setFont("helvetica", 'normal');
-                    doc.setFontSize(10);
-                    safeText(`Data: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth - margin, 40, { align: 'right' });
-                    safeText(`Orçamento Nº: ${Math.floor(Math.random() * 10000)}`, pageWidth - margin, 48, { align: 'right' });
-                    doc.setFillColor(...colors.lightGray);
-                    doc.roundedRect(70, 90, pageWidth - 85, 60, 3, 3, 'F');
-                    doc.setTextColor(...colors.primary);
-                    doc.setFont("helvetica", 'bold');
-                    doc.setFontSize(12);
-                    safeText("CONTRATADA", 75, 102);
-                    doc.setTextColor(...colors.text);
-                    doc.setFont("helvetica", 'normal');
-                    doc.setFontSize(10);
-                    safeText(`Empresa: ${infoUsuario.empresa}`, 75, 115);
-                    safeText(`Telefone: ${infoUsuario.telefone}`, 75, 125);
-                    safeText(`Email: ${infoUsuario.email}`, 75, 135);
-                    safeText(`CNPJ/CPF: ${infoUsuario.cpfCnpj}`, 75, 145);
-                    doc.setFillColor(...colors.lightGray);
-                    doc.roundedRect(70, 160, pageWidth - 85, 60, 3, 3, 'F');
-                    doc.setTextColor(...colors.primary);
-                    doc.setFont("helvetica", 'bold');
-                    doc.setFontSize(12);
-                    safeText("CLIENTE", 75, 172);
-                    doc.setTextColor(...colors.text);
-                    doc.setFont("helvetica", 'normal');
-                    doc.setFontSize(10);
-                    safeText(`Nome: ${cliente.nome}`, 75, 185);
-                    safeText(`Telefone: ${cliente.telefone}`, 75, 195);
-                    safeText(`Email: ${cliente.email || 'N/A'}`, 75, 205);
-                    safeText(`CNPJ/CPF: ${cliente.cpfCnpj || cliente.cpf || cliente.cnpj || 'N/A'}`, 75, 215);
-                    addFooter(1);
-                }
-
-                function addContent() {
-                    let y = addPage(2);
-                    let pageNumber = 2;
-
-                    y = addSectionTitle("Orçamento Detalhado", y);
-                    y += 10;
-
-                    const medidaGroups = document.querySelectorAll('#medidasContainer > div');
-
-
-                    const medidasPorPelicula = {};
-                    const totaisGerais = { totalM2: 0, precoTotal: 0 };
-
-                    medidaGroups.forEach(group => {
-                        const isChecked = group.querySelector('input[type="checkbox"]').checked;
-                        const largura = parseFloat(group.querySelector('.largura-input').value) || 0;
-                        const altura = parseFloat(group.querySelector('.altura-input').value) || 0;
-                        const quantidade = parseInt(group.querySelector('.quantidade-input').value) || 0;
-
-                        if (isChecked && largura > 0 && altura > 0 && quantidade > 0) {
-                            const peliculaNome = group.querySelector('.pelicula-select').value;
-                            if (!medidasPorPelicula[peliculaNome]) {
-                                medidasPorPelicula[peliculaNome] = [];
-                            }
-                            medidasPorPelicula[peliculaNome].push(group);
-
-                            const pelicula = peliculas.find(p => p.nome === peliculaNome);
-                            const area = largura * altura * quantidade / 10000;
-                            const preco = pelicula ? area * pelicula.preco : 0;
-
-                            totaisGerais.totalM2 += area;
-                            totaisGerais.precoTotal += preco;
-                        }
+        async function addLogo(x, y, maxWidth, maxHeight) {
+            if (infoUsuario.logo) {
+                try {
+                    const img = new Image();
+                    img.src = infoUsuario.logo;
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
                     });
+                    let imgWidth = img.width;
+                    let imgHeight = img.height;
+                    const imgRatio = imgWidth / imgHeight;
+                    const boxRatio = maxWidth / maxHeight;
+                    if (imgRatio > boxRatio) {
+                        imgWidth = maxWidth;
+                        imgHeight = maxWidth / imgRatio;
+                    } else {
+                        imgHeight = maxHeight;
+                        imgWidth = maxHeight * imgRatio;
+                    }
+                    const offsetX = x + (maxWidth - imgWidth) / 2;
+                    const offsetY = y + (maxHeight - imgHeight) / 2;
+                    doc.addImage(infoUsuario.logo, 'PNG', offsetX, offsetY, imgWidth, imgHeight);
+                } catch (error) {
+                    console.error("Erro ao adicionar a logo:", error);
+                    doc.setFontSize(12);
+                    safeText("LOGO", x + maxWidth / 2, y + maxHeight / 2, { align: 'center', baseline: 'middle' });
+                }
+            } else {
+                doc.setFontSize(12);
+                safeText("LOGO", x + maxWidth / 2, y + maxHeight / 2, { align: 'center', baseline: 'middle' });
+            }
+        }
 
-                    function addMedidasTable(medidas, peliculaNome) {
-                        const headers = ["Item", "Dimensões", "Ambiente", "Tipo", "Área", "Preço"];
-                        const colWidths = [15, 30, 40, 40, 20, 30];
-                        
-                        // Título da tabela
-                        doc.setTextColor(...colors.primary);
-                        doc.setFont("helvetica", 'bold');
-                        doc.setFontSize(12);
-                        safeText(peliculaNome, margin, y);
-                        y += 10;
+        function addFooter(pageNumber) {
+            doc.setFillColor(...colors.primary);
+            doc.rect(0, pageHeight - 10, pageWidth, 10, 'F');
+            doc.setTextColor(...colors.white);
+            doc.setFontSize(8);
+            safeText(infoUsuario.empresa || '', margin, pageHeight - 3);
+            safeText(infoUsuario.telefone || '', pageWidth / 2, pageHeight - 3, { align: 'center' });
+            safeText(`Página ${pageNumber}`, pageWidth - margin, pageHeight - 3, { align: 'right' });
+        }
 
-                        // Cabeçalho da tabela
+        function addPage(pageNumber) {
+            doc.addPage();
+            addFooter(pageNumber);
+            return margin + 10;
+        }
+
+        function addSectionTitle(title, y) {
+            doc.setDrawColor(...colors.primary);
+            doc.setLineWidth(0.5);
+            doc.line(margin, y, pageWidth - margin, y);
+            doc.setTextColor(...colors.primary);
+            doc.setFont("helvetica", 'bold');
+            doc.setFontSize(14);
+            safeText(title, margin, y + 10);
+            return y + 20;
+        }
+
+        async function addCover() {
+            doc.setFillColor(...colors.white);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+            doc.setFillColor(...colors.primary);
+            doc.rect(0, 0, 60, pageHeight, 'F');
+            await addLogo(10, 20, 40, 40);
+            doc.setTextColor(...colors.primary);
+            doc.setFont("helvetica", 'bold');
+            doc.setFontSize(24);
+            safeText("PROPOSTA DE", 70, 40);
+            safeText("ORÇAMENTO", 70, 55);
+            doc.setTextColor(...colors.secondary);
+            doc.setFont("helvetica", 'italic');
+            doc.setFontSize(14);
+            safeText("Soluções em Películas de Alta Qualidade", 70, 70);
+            doc.setTextColor(...colors.text);
+            doc.setFont("helvetica", 'normal');
+            doc.setFontSize(10);
+            safeText(`Data: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth - margin, 40, { align: 'right' });
+            safeText(`Orçamento Nº: ${Math.floor(Math.random() * 10000)}`, pageWidth - margin, 48, { align: 'right' });
+            doc.setFillColor(...colors.lightGray);
+            doc.roundedRect(70, 90, pageWidth - 85, 60, 3, 3, 'F');
+            doc.setTextColor(...colors.primary);
+            doc.setFont("helvetica", 'bold');
+            doc.setFontSize(12);
+            safeText("CONTRATADA", 75, 102);
+            doc.setTextColor(...colors.text);
+            doc.setFont("helvetica", 'normal');
+            doc.setFontSize(10);
+            safeText(`Empresa: ${infoUsuario.empresa || ''}`, 75, 115);
+            safeText(`Telefone: ${infoUsuario.telefone || ''}`, 75, 125);
+            safeText(`Email: ${infoUsuario.email || ''}`, 75, 135);
+            safeText(`CNPJ/CPF: ${infoUsuario.cpfCnpj || ''}`, 75, 145);
+            doc.setFillColor(...colors.lightGray);
+            doc.roundedRect(70, 160, pageWidth - 85, 60, 3, 3, 'F');
+            doc.setTextColor(...colors.primary);
+            doc.setFont("helvetica", 'bold');
+            doc.setFontSize(12);
+            safeText("CLIENTE", 75, 172);
+            doc.setTextColor(...colors.text);
+            doc.setFont("helvetica", 'normal');
+            doc.setFontSize(10);
+            safeText(`Nome: ${cliente.nome || ''}`, 75, 185);
+            safeText(`Telefone: ${cliente.telefone || ''}`, 75, 195);
+            safeText(`Email: ${cliente.email || 'N/A'}`, 75, 205);
+            safeText(`CNPJ/CPF: ${cliente.cpfCnpj || cliente.cpf || cliente.cnpj || 'N/A'}`, 75, 215);
+            addFooter(1);
+        }
+
+        function addContent() {
+            let y = addPage(2);
+            let pageNumber = 2;
+
+            y = addSectionTitle("Orçamento Detalhado", y);
+            y += 10;
+
+            const medidaGroups = document.querySelectorAll('#medidasContainer > div');
+
+            const medidasPorPelicula = {};
+            const totaisGerais = { totalM2: 0, precoTotal: 0 };
+
+            medidaGroups.forEach(group => {
+                const isChecked = group.querySelector('input[type="checkbox"]')?.checked;
+                const largura = parseFloat(group.querySelector('.largura-input')?.value) || 0;
+                const altura = parseFloat(group.querySelector('.altura-input')?.value) || 0;
+                const quantidade = parseInt(group.querySelector('.quantidade-input')?.value) || 0;
+
+                if (isChecked && largura > 0 && altura > 0 && quantidade > 0) {
+                    const peliculaNome = group.querySelector('.pelicula-select')?.value;
+                    if (peliculaNome) {
+                        if (!medidasPorPelicula[peliculaNome]) {
+                            medidasPorPelicula[peliculaNome] = [];
+                        }
+                        medidasPorPelicula[peliculaNome].push(group);
+
+                        const pelicula = peliculas.find(p => p.nome === peliculaNome);
+                        const area = largura * altura * quantidade / 10000;
+                        const preco = pelicula ? area * pelicula.preco : 0;
+
+                        totaisGerais.totalM2 += area;
+                        totaisGerais.precoTotal += preco;
+                    }
+                }
+            });
+
+            function addMedidasTable(medidas, peliculaNome) {
+                const headers = ["Item", "Dimensões", "Ambiente", "Tipo", "Área", "Preço"];
+                const colWidths = [15, 30, 40, 40, 20, 30];
+                
+                doc.setTextColor(...colors.primary);
+                doc.setFont("helvetica", 'bold');
+                doc.setFontSize(12);
+                safeText(peliculaNome, margin, y);
+                y += 10;
+
+                doc.setFillColor(...colors.primary);
+                doc.rect(margin, y, pageWidth - 2*margin, 8, 'F');
+                doc.setTextColor(...colors.white);
+                doc.setFont("helvetica", 'bold');
+                doc.setFontSize(9);
+
+                let xOffset = margin;
+                headers.forEach((header, index) => {
+                    safeText(header, xOffset + 2, y + 6);
+                    xOffset += colWidths[index];
+                });
+                y += 10;
+
+                doc.setFont("helvetica", 'normal');
+                doc.setFontSize(8);
+
+                const zebraColor1 = [255, 255, 255];
+                const zebraColor2 = [245, 245, 245];
+
+                medidas.forEach((group, index) => {
+                    if (y > pageHeight - 60) {
+                        y = addPage(++pageNumber);
                         doc.setFillColor(...colors.primary);
                         doc.rect(margin, y, pageWidth - 2*margin, 8, 'F');
                         doc.setTextColor(...colors.white);
                         doc.setFont("helvetica", 'bold');
                         doc.setFontSize(9);
-
-                        let xOffset = margin;
+                        xOffset = margin;
                         headers.forEach((header, index) => {
                             safeText(header, xOffset + 2, y + 6);
                             xOffset += colWidths[index];
                         });
                         y += 10;
-
                         doc.setFont("helvetica", 'normal');
                         doc.setFontSize(8);
-
-                        // Cores para o efeito zebrado
-                        const zebraColor1 = [255, 255, 255]; // Branco
-                        const zebraColor2 = [245, 245, 245]; // Cinza muito claro
-
-                        medidas.forEach((group, index) => {
-                            if (y > pageHeight - 60) {
-                                y = addPage(++pageNumber);
-                                // Repetir cabeçalho da tabela na nova página
-                                doc.setFillColor(...colors.primary);
-                                doc.rect(margin, y, pageWidth - 2*margin, 8, 'F');
-                                doc.setTextColor(...colors.white);
-                                doc.setFont("helvetica", 'bold');
-                                doc.setFontSize(9);
-                                xOffset = margin;
-                                headers.forEach((header, index) => {
-                                    safeText(header, xOffset + 2, y + 6);
-                                    xOffset += colWidths[index];
-                                });
-                                y += 10;
-                                doc.setFont("helvetica", 'normal');
-                                doc.setFontSize(8);
-                            }
-
-                           // Efeito zebrado
-                           doc.setFillColor(...(index % 2 === 0 ? zebraColor1 : zebraColor2));
-                            doc.rect(margin, y - 2, pageWidth - 2*margin, 10, 'F');
-
-                            doc.setTextColor(...colors.text);
-
-                            const largura = group.querySelector('.largura-input').value || '0';
-                            const altura = group.querySelector('.altura-input').value || '0';
-                            const quantidade = group.querySelector('.quantidade-input').value || '0';
-                            const totalM2 = group.querySelector('input[placeholder="M²"]').value || '0';
-                            const ambiente = group.querySelector('.additional-fields select:first-child').value || '';
-                            const tipoAplicacao = group.querySelector('.additional-fields select:last-child').value || '';
-                            const pelicula = peliculas.find(p => p.nome === peliculaNome);
-
-                            xOffset = margin;
-                            safeText(`${index + 1}`, xOffset + 2, y + 4);
-                            xOffset += colWidths[0];
-                            safeText(`${largura}x${altura} (${quantidade})`, xOffset + 2, y + 4);
-                            xOffset += colWidths[1];
-                            safeText(ambiente, xOffset + 2, y + 4);
-                            xOffset += colWidths[2];
-                            safeText(tipoAplicacao, xOffset + 2, y + 4);
-                            xOffset += colWidths[3];
-                            safeText(`${totalM2} m²`, xOffset + 2, y + 4);
-                            xOffset += colWidths[4];
-
-                            if (pelicula) {
-                                const preco = (pelicula.preco * parseFloat(totalM2)).toFixed(2);
-                                safeText(`R$ ${preco}`, xOffset + 2, y + 4);
-                            }
-
-                            y += 10; // Espaçamento entre linhas
-                        });
-
-                        return y;
                     }
 
-                    Object.entries(medidasPorPelicula).forEach(([peliculaNome, medidas], index) => {
-    if (index > 0) y = addPage(++pageNumber);
-    y = addMedidasTable(medidas, peliculaNome);
-    
-    const totalPelicula = {
-        totalM2: medidas.reduce((sum, group) => sum + (parseFloat(group.querySelector('input[placeholder="M²"]').value) || 0), 0),
-        precoTotal: medidas.reduce((sum, group) => {
-            const area = parseFloat(group.querySelector('input[placeholder="M²"]').value) || 0;
-            const pelicula = peliculas.find(p => p.nome === peliculaNome);
-            return sum + (pelicula ? area * pelicula.preco : 0);
-        }, 0)
-    };
-
-    // Acumular nos totais gerais
-    totaisGerais.totalM2 += totalPelicula.totalM2;
-    totaisGerais.precoTotal += totalPelicula.precoTotal;
-
-    // Adicionar logs para debug
-    console.log("Subtotal:", peliculaNome, "Área:", totalPelicula.totalM2, "Preço:", totalPelicula.precoTotal);
-    console.log("Total Geral Atualizado:", totaisGerais.totalM2, totaisGerais.precoTotal);
-
-    y += 5;
-    doc.setDrawColor(...colors.secondary);
-    doc.setLineWidth(0.5);
-    doc.line(margin, y, pageWidth - margin, y);
-    doc.setTextColor(...colors.secondary);
-    doc.setFont("helvetica", 'bold');
-    doc.setFontSize(10);
-    safeText(`Subtotal ${peliculaNome}:`, margin, y + 10);
-    safeText(`Área: ${totalPelicula.totalM2.toFixed(2)} m²`, pageWidth / 2, y + 10);
-    safeText(`R$ ${totalPelicula.precoTotal.toFixed(2)}`, pageWidth - margin, y + 10, { align: 'right' });
-    y += 15;
-});
-
-// Adicionar logs antes de exibir os totais gerais no PDF
-console.log("Final Total Geral:", totaisGerais.totalM2, totaisGerais.precoTotal);
-
-if (y > pageHeight - 60) {
-    y = addPage(++pageNumber);
-}
-
-y = addSectionTitle("Total Geral do Orçamento", y);
-y += 10;
-doc.setDrawColor(...colors.primary);
-doc.setLineWidth(1);
-doc.line(margin, y, pageWidth - margin, y);
-y += 5;
-doc.setTextColor(...colors.primary);
-doc.setFont("helvetica", 'bold');
-doc.setFontSize(12);
-safeText("Total Geral:", margin, y + 10);
-safeText(`Área Total: ${totaisGerais.totalM2.toFixed(2)} m²`, margin, y + 20);
-safeText(`Preço Total: R$ ${totaisGerais.precoTotal.toFixed(2)}`, pageWidth - margin, y + 20, { align: 'right' });
-
-
-                    y += 30;
-
-                    y = addPage(++pageNumber);
-                    y = addSectionTitle("Condições de Pagamento e Informações Relevantes", y);
-                    y += 10;
+                    doc.setFillColor(...(index % 2 === 0 ? zebraColor1 : zebraColor2));
+                    doc.rect(margin, y - 2, pageWidth - 2*margin, 10, 'F');
 
                     doc.setTextColor(...colors.text);
-                    doc.setFont("helvetica", 'normal');
-                    doc.setFontSize(10);
 
-                    const condicoesPagamento = [
-                        "1. Formas de Pagamento Aceitas:",
-                        "   • Transferência bancária e Pix",
-                        "   • Cartão de crédito (em até 3x sem juros)",
-                        "   • Boleto bancário",
-                        "",
-                        "2. Cronograma de Pagamento:",
-                        "   • 50% do valor quando acima de R$ 2.500 na aprovação do orçamento",
-                        "   • 50% restantes após a conclusão dos serviços",
-                        "",
-                        "3. Prazo de Instalação:",
-                        "   • A ser definido em comum acordo, conforme disponibilidade",
-                        "",
-                        "4. Validade da Proposta:",
-                        "   • Esta proposta é válida por 60 dias a partir da data de emissã",
-                        "",
-                        "5. Garantia:",
-                        "   • 2 a 10 anos contra defeitos de fabricação",
-                        "   • 10 semanas contra defeitos de aplicação",
-                        "",
-                        "6. Observações Importantes:",
-                        "   • Quaisquer alterações no projeto podem resultar em ajustes no orçamento",
-                        "   • A instalação está sujeita às condições climáticas favoráveis",
-                        "   • O cliente é responsável por fornecer acesso adequado ao local de instalação"
-                    ];
+                    const largura = group.querySelector('.largura-input')?.value || '0';
+                    const altura = group.querySelector('.altura-input')?.value || '0';
+                    const quantidade = group.querySelector('.quantidade-input')?.value || '0';
+                    const totalM2 = group.querySelector('input[placeholder="M²"]')?.value || '0';
+                    const ambiente = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o ambiente"]')?.value || '';
+                    const tipoAplicacao = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o tipo de aplicação"]')?.value || '';
+                    const pelicula = peliculas.find(p => p.nome === peliculaNome);
 
-                    const lineHeight = 6;
-                    condicoesPagamento.forEach((condicao, index) => {
-                        if (y > pageHeight - 40) {
-                            y = addPage(++pageNumber);
-                            y = addSectionTitle("Condições de Pagamento (continuação)", y);
-                            y += 10;
-                        }
-                        safeText(condicao, margin, y);
-                        y += lineHeight;
-                    });
+                    xOffset = margin;
+                    safeText(`${index + 1}`, xOffset + 2, y + 4);
+                    xOffset += colWidths[0];
+                    safeText(`${largura}x${altura} (${quantidade})`, xOffset + 2, y + 4);
+                    xOffset += colWidths[1];
+                    safeText(ambiente, xOffset + 2, y + 4);
+                    xOffset += colWidths[2];
+                    safeText(tipoAplicacao, xOffset + 2, y + 4);
+                    xOffset += colWidths[3];
+                    safeText(`${totalM2} m²`, xOffset + 2, y + 4);
+                    xOffset += colWidths[4];
 
-                    y += 20;
-                    doc.setDrawColor(...colors.primary);
-                    doc.setLineWidth(0.5);
-                    doc.line(margin, y, pageWidth / 2 - 20, y);
-                    doc.setFont("helvetica", 'bold');
-                    doc.setFontSize(11);
-                    safeText(infoUsuario.nome, margin, y + 6);
-                    doc.setFont("helvetica", 'normal');
-                    doc.setFontSize(10);
-                    safeText(infoUsuario.empresa, margin, y + 12);
-                    safeText(infoUsuario.telefone, margin, y + 18);
-                    safeText(infoUsuario.email, margin, y + 24);
-                }
+                    if (pelicula) {
+                        const preco = (pelicula.preco * parseFloat(totalM2)).toFixed(2);
+                        safeText(`R$ ${preco}`, xOffset + 2, y + 4);
+                    }
 
-                await addCover();
-                addContent();
+                    y += 10;
+                });
 
-                doc.save(`orcamento_${cliente.nome.replace(/\s+/g, '_').toLowerCase()}.pdf`);
-                console.log('PDF gerado com sucesso!');
-            } catch (error) {
-                console.error("Erro ao gerar PDF:", error);
-                alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique o console para mais detalhes.");
+                return y;
             }
+
+            Object.entries(medidasPorPelicula).forEach(([peliculaNome, medidas], index) => {
+                if (index > 0) y = addPage(++pageNumber);
+                y = addMedidasTable(medidas, peliculaNome);
+                
+                const totalPelicula = {
+                    totalM2: medidas.reduce((sum, group) => sum + (parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0), 0),
+                    precoTotal: medidas.reduce((sum, group) => {
+                        const area = parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0;
+                        const pelicula = peliculas.find(p => p.nome === peliculaNome);
+                return sum + (pelicula ? area * pelicula.preco : 0);
+            }, 0)
+        };
+
+        // Acumular nos totais gerais
+        totaisGerais.totalM2 += totalPelicula.totalM2;
+        totaisGerais.precoTotal += totalPelicula.precoTotal;
+
+        console.log("Subtotal:", peliculaNome, "Área:", totalPelicula.totalM2, "Preço:", totalPelicula.precoTotal);
+        console.log("Total Geral Atualizado:", totaisGerais.totalM2, totaisGerais.precoTotal);
+
+        y += 5;
+        doc.setDrawColor(...colors.secondary);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, pageWidth - margin, y);
+        doc.setTextColor(...colors.secondary);
+        doc.setFont("helvetica", 'bold');
+        doc.setFontSize(10);
+        safeText(`Subtotal ${peliculaNome}:`, margin, y + 10);
+        safeText(`Área: ${totalPelicula.totalM2.toFixed(2)} m²`, pageWidth / 2, y + 10);
+        safeText(`R$ ${totalPelicula.precoTotal.toFixed(2)}`, pageWidth - margin, y + 10, { align: 'right' });
+        y += 15;
+    });
+
+    console.log("Final Total Geral:", totaisGerais.totalM2, totaisGerais.precoTotal);
+
+    if (y > pageHeight - 60) {
+        y = addPage(++pageNumber);
+    }
+
+    y = addSectionTitle("Total Geral do Orçamento", y);
+    y += 10;
+    doc.setDrawColor(...colors.primary);
+    doc.setLineWidth(1);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 5;
+    doc.setTextColor(...colors.primary);
+    doc.setFont("helvetica", 'bold');
+    doc.setFontSize(12);
+    safeText("Total Geral:", margin, y + 10);
+    safeText(`Área Total: ${totaisGerais.totalM2.toFixed(2)} m²`, margin, y + 20);
+    safeText(`Preço Total: R$ ${totaisGerais.precoTotal.toFixed(2)}`, pageWidth - margin, y + 20, { align: 'right' });
+
+    y += 30;
+
+    y = addPage(++pageNumber);
+    y = addSectionTitle("Condições de Pagamento e Informações Relevantes", y);
+    y += 10;
+
+    doc.setTextColor(...colors.text);
+    doc.setFont("helvetica", 'normal');
+    doc.setFontSize(10);
+
+    const condicoesPagamento = [
+        "1. Formas de Pagamento Aceitas:",
+        "   • Transferência bancária e Pix",
+        "   • Cartão de crédito (em até 3x sem juros)",
+        "   • Boleto bancário",
+        "",
+        "2. Cronograma de Pagamento:",
+        "   • 50% do valor quando acima de R$ 2.500 na aprovação do orçamento",
+        "   • 50% restantes após a conclusão dos serviços",
+        "",
+        "3. Prazo de Instalação:",
+        "   • A ser definido em comum acordo, conforme disponibilidade",
+        "",
+        "4. Validade da Proposta:",
+        "   • Esta proposta é válida por 60 dias a partir da data de emissão",
+        "",
+        "5. Garantia:",
+        "   • 2 a 10 anos contra defeitos de fabricação",
+        "   • 10 semanas contra defeitos de aplicação",
+        "",
+        "6. Observações Importantes:",
+        "   • Quaisquer alterações no projeto podem resultar em ajustes no orçamento",
+        "   • A instalação está sujeita às condições climáticas favoráveis",
+        "   • O cliente é responsável por fornecer acesso adequado ao local de instalação"
+    ];
+
+    const lineHeight = 6;
+    condicoesPagamento.forEach((condicao, index) => {
+        if (y > pageHeight - 40) {
+            y = addPage(++pageNumber);
+            y = addSectionTitle("Condições de Pagamento (continuação)", y);
+            y += 10;
         }
+        safeText(condicao, margin, y);
+        y += lineHeight;
+    });
+
+    y += 20;
+    doc.setDrawColor(...colors.primary);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageWidth / 2 - 20, y);
+    doc.setFont("helvetica", 'bold');
+    doc.setFontSize(11);
+    safeText(infoUsuario.nome || '', margin, y + 6);
+    doc.setFont("helvetica", 'normal');
+    doc.setFontSize(10);
+    safeText(infoUsuario.empresa || '', margin, y + 12);
+    safeText(infoUsuario.telefone || '', margin, y + 18);
+    safeText(infoUsuario.email || '', margin, y + 24);
+}
+
+    await addCover();
+    addContent();
+
+    doc.save(`orcamento_${cliente.nome.replace(/\s+/g, '_').toLowerCase()}.pdf`);
+    console.log('PDF gerado com sucesso!');
+} catch (error) {
+    console.error("Erro ao gerar PDF:", error);
+    alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique o console para mais detalhes.");
+}
+}
 
         // Funções auxiliares para manipulação do IndexedDB
         async function salvarClienteNoIndexedDB(cliente) {
