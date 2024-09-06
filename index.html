@@ -54,7 +54,7 @@
                 <!-- Cabeçalho -->
                 <div class="mb-4">
                     <div class="text-center mb-2">
-                        <h1 class="text-2xl sm:text-3xl font-montserrat text-gray-900 font-bold">os_PelikOs</h1>
+                        <h1 class="text-2xl sm:text-3xl font-montserrat text-gray-900 font-bold">Los_PelikoSs</h1>
                     </div>
                     <div class="flex items-center space-x-2">
                         <select id="clienteSelect" class="flex-grow p-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="onClienteChange()">
@@ -882,7 +882,7 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
     // Adicionando evento para o botão de PDF da versão mobile
     const generatePdfButtonMobile = document.getElementById('generatePdfButtonMobile');
     if (generatePdfButtonMobile) {
-        generatePdfButtonMobile.addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
+        document.getElementById('generatePdfButtonMobile').addEventListener('click', generatePDF_v3_0);
     }
 
     const salvarInfoUsuarioBtn = document.getElementById('saveUserInfoButton');
@@ -930,8 +930,7 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
     }
 
     carregarClientes();
-    document.getElementById('generatePdfButton').addEventListener('click', () => verificarAtivacaoAntes(generatePDF_v3_0));
-
+    document.getElementById('generatePdfButton').addEventListener('click', generatePDF_v3_0);
     const primaryColorPreview = document.getElementById('primaryColorPreview');
     const secondaryColorPreview = document.getElementById('secondaryColorPreview');
     const primaryColorInput = document.getElementById('primaryColor');
@@ -1545,7 +1544,7 @@ function duplicarMedidas() {
         }
 
         // Sistema de verificação do aplicativo
-        const DURACAO_TESTE_GRATIS = 2 * 60 * 1000;
+        const DURACAO_TESTE_GRATIS = 30 * 24 * 60 * 60 * 1000; // 30 dias em milissegundos
 
         async function verificarStatusAplicativo() {
             const db = await abrirIndexedDB();
@@ -1753,16 +1752,13 @@ async function ativarAplicativo() {
         }
 
         async function verificarAtivacaoAntes(acao) {
-            const status = await verificarStatusAplicativo
-
-();
-            if (status.status === 'ativado') {
-                acao();
-            } else {
-                mostrarPopupVerificacao();
-            }
-        }
-
+    const status = await verificarStatusAplicativo();
+    if (status.status === 'ativado' || status.status === 'em_teste') {
+        acao();
+    } else {
+        mostrarPopupVerificacao();
+    }
+}
         async function verificarStatusInicial() {
             const status = await verificarStatusAplicativo();
             if (status.status !== 'ativado') {
