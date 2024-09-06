@@ -2278,6 +2278,26 @@ async function ativarAplicativo() {
             const objectStore = transaction.objectStore('medidas');
             return objectStore.delete(cliente);
         }
+   
+window.addEventListener('load', () => {
+    // Verifica se o usuário já acessou anteriormente
+    const isFirstVisit = localStorage.getItem('firstVisit');
+
+    if (!isFirstVisit) {
+        // Mostra o alerta de boas-vindas
+        alert('Parabéns! Você ganhou 30 dias para explorar tudo o que nosso aplicativo oferece. Use à vontade e, se curtir, quem sabe você não fica por mais tempo? 😉');
+
+
+        // Armazena a data da primeira visita no localStorage
+        const firstVisitDate = new Date();
+        localStorage.setItem('firstVisit', firstVisitDate);
+
+        // Também pode salvar o número de dias de teste, se necessário
+        const trialDays = 30;
+        localStorage.setItem('trialPeriod', trialDays);
+    }
+});
+
 
     </script>
 </body>
