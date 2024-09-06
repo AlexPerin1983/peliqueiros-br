@@ -2279,24 +2279,33 @@ async function ativarAplicativo() {
             return objectStore.delete(cliente);
         }
    
-window.addEventListener('load', () => {
-    // Verifica se o usuário já acessou anteriormente
-    const isFirstVisit = localStorage.getItem('firstVisit');
-
-    if (!isFirstVisit) {
-        // Mostra o alerta de boas-vindas
-        alert('Parabéns! Você ganhou 30 dias para explorar tudo o que nosso aplicativo oferece. Use à vontade e, se curtir, quem sabe você não fica por mais tempo? 😉');
-
-
-        // Armazena a data da primeira visita no localStorage
+        window.addEventListener('load', () => {
+    const trialDays = 30; // Definir o período de teste de 30 dias
+    const firstVisit = localStorage.getItem('firstVisit');
+    
+    if (!firstVisit) {
+        // Primeira visita
         const firstVisitDate = new Date();
         localStorage.setItem('firstVisit', firstVisitDate);
+        alert('Parabéns! Você ganhou 30 dias para explorar tudo o que nosso aplicativo oferece. Use à vontade e, se curtir, quem sabe você não fica por mais tempo? 😉');
+    } else {
+        // Calcular quantos dias restam
+        const currentDate = new Date();
+        const firstVisitDate = new Date(firstVisit);
+        const timeDiff = currentDate - firstVisitDate;
+        const daysPassed = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Converte a diferença em dias
+        const daysLeft = trialDays - daysPassed;
 
-        // Também pode salvar o número de dias de teste, se necessário
-        const trialDays = 30;
-        localStorage.setItem('trialPeriod', trialDays);
+        if (daysLeft > 0) {
+            // Mostrar alerta de quantos dias restam
+            alert(`Você tem ${daysLeft} dias restantes no seu período de teste gratuito.`);
+        } else {
+            // O período de teste acabou
+            alert('Seu período de teste de 30 dias expirou. Esperamos que tenha aproveitado!');
+        }
     }
 });
+
 
 
     </script>
