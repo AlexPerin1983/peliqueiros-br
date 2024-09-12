@@ -2193,9 +2193,13 @@ async function ativarAplicativo() {
     console.log('PDF gerado com sucesso!');
 } catch (error) {
     console.error("Erro ao gerar PDF:", error);
-    alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique o console para mais detalhes.");
-}
-}
+    
+    if (error.message && error.message.includes("Cannot read properties of undefined")) {
+        alert("Erro ao gerar o PDF: Dados da empresa incompletos. Por favor, preencha todas as informações da empresa no menu de configurações do usuário antes de gerar o PDF.");
+    } else {
+        alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique se todas as informações necessárias foram preenchidas e tente novamente.");
+    }
+}}
 
         // Funções auxiliares para manipulação do IndexedDB
         async function salvarClienteNoIndexedDB(cliente) {
