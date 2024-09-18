@@ -1,4 +1,4 @@
-const CACHE_NAME = 'app-cache-v15'; // Nome do cache, altere a cada nova versão
+const CACHE_NAME = 'app-cache-v16'; // Nome do cache, altere a cada nova versão
 
 const urlsToCache = [
     '/peliqueiros-br/',
