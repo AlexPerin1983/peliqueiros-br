@@ -108,13 +108,6 @@
                     <!-- Os grupos de medidas serão inseridos aqui dinamicamente -->
                 </div>
 
-                <!-- Botão para abrir o popup de condições de pagamento -->
-<button id="paymentConditionsButton" class="p-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300 shadow-md">
-    <i class="fas fa-pencil-alt"></i>
-</button>
-
-
-
                 <!-- Resultado e botões para telas maiores -->
                 <div class="hidden sm:block mt-4">
                     <div id="resultadoDesktop" class="text-right text-xl sm:text-2xl font-bold text-green-500 mb-4">Total M²: 0,00 | Preço Total: R$ 0,00</div>
@@ -137,37 +130,26 @@
         </div>
     </div>
 
-    <!-- Seção de resultados na versão mobile -->
-  <!-- Rodapé fixo para mobile -->
-<div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white bg-opacity-85 shadow-lg border-t border-gray-800">
-    <div class="container mx-auto px-2 py-3">
-        <!-- Div atualizada para flex e adicionando o botão do lápis -->
-        <div id="resultadoMobile" class="flex items-center justify-between text-lg font-bold text-black-100 mb-2">
-            <div>Total M²: 0,00 | R$ 0,00</div>
-            <!-- Botão do lápis para editar condições de pagamento -->
-            <button id="paymentConditionsButtonMobile" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
-                <i class="fas fa-pencil-alt text-2xl"></i>
-            </button>
-        </div>
-        <!-- Botões inferiores -->
-        <div class="flex justify-around items-center">
-            <button onclick="addMedidaGroup(true)" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
-                <i class="fas fa-plus-circle text-2xl"></i>
-            </button>
-            <button onclick="duplicarMedidas()" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
-                <i class="fas fa-copy text-2xl"></i>
-            </button>
-            <button id="generatePdfButtonMobile" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
-                <i class="fas fa-file-pdf text-2xl"></i>
-            </button>
-            <button onclick="copyShareURL()" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
-                <i class="fas fa-share-alt text-2xl"></i>
-            </button>
+    <!-- Rodapé fixo para mobile -->
+    <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white bg-opacity-85 shadow-lg border-t border-gray-800">
+        <div class="container mx-auto px-2 py-3">
+            <div id="resultadoMobile" class="text-center text-lg font-bold text-black-100 mb-2">Total M²: 0,00 | R$ 0,00</div>
+            <div class="flex justify-around items-center">
+                <button onclick="addMedidaGroup(true)" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
+                    <i class="fas fa-plus-circle text-2xl"></i>
+                </button>
+                <button onclick="duplicarMedidas()" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
+                    <i class="fas fa-copy text-2xl"></i>
+                </button>
+                <button id="generatePdfButtonMobile" class="p-2 text-black-100 hover:text-yellow-300  transition duration-300">
+                    <i class="fas fa-file-pdf text-2xl"></i>
+                </button>
+                <button onclick="copyShareURL()" class="p-2 text-black-100 hover:text-yellow-300 transition duration-300">
+                    <i class="fas fa-share-alt text-2xl"></i>
+                </button>
+            </div>
         </div>
     </div>
-</div>
-
-    
 
     <div id="popupUsuario" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center overflow-y-auto py-5">
         <div class="bg-white rounded-lg shadow-lg relative w-full max-w-md m-2">
@@ -227,71 +209,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Popup de Condições de Pagamento -->
-<div id="paymentPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg relative max-w-md w-full">
-        <span class="absolute top-2 right-2 text-2xl font-bold cursor-pointer" onclick="closePaymentPopup()">&times;</span>
-        <h2 class="text-xl font-semibold mb-4">Condições de Pagamento</h2>
-        <form id="paymentForm" class="space-y-4">
-            <!-- Opções de pagamento -->
-            <div>
-                <label class="block font-semibold mb-2">Formas de Pagamento:</label>
-                <!-- Opção 1: Parcelamento Sem Juros -->
-                <div class="flex items-center space-x-2 mb-2">
-                    <input type="checkbox" id="paymentOptionInstallments" class="form-checkbox h-4 w-4 text-blue-600" onchange="updatePaymentOptions()">
-                    <label for="paymentOptionInstallments">Parcelamento Sem Juros</label>
-                    <select id="installmentsSelect" class="p-1 border border-gray-300 rounded-md" disabled>
-                        <!-- Opções de número de parcelas -->
-                        <option value="1">1x</option>
-                        <option value="2">2x</option>
-                        <option value="3">3x</option>
-                        <option value="4">4x</option>
-                        <option value="5">5x</option>
-                        <option value="6">6x</option>
-                    </select>
-                    <span id="installmentValue"></span>
-                </div>
-                <!-- Opção 2: Pix -->
-                <div class="flex items-center space-x-2 mb-2">
-                    <input type="checkbox" id="paymentOptionPix" class="form-checkbox h-4 w-4 text-blue-600">
-                    <label for="paymentOptionPix">Pix</label>
-                    <span id="pixValue"></span>
-                </div>
-                <!-- Opção 3: Boleto Bancário -->
-                <div class="flex items-center space-x-2 mb-2">
-                    <input type="checkbox" id="paymentOptionBoleto" class="form-checkbox h-4 w-4 text-blue-600" onchange="updatePaymentOptions()">
-                    <label for="paymentOptionBoleto">Boleto Bancário</label>
-                    <select id="boletoSelect" class="p-1 border border-gray-300 rounded-md" disabled>
-                        <!-- Opções de número de boletos -->
-                        <option value="1">1x</option>
-                        <option value="2">2x</option>
-                        <option value="3">3x</option>
-                    </select>
-                    <span id="boletoValue"></span>
-                </div>
-            </div>
-            <!-- Cronograma de pagamento -->
-            <div>
-                <label class="block font-semibold mb-2">Cronograma de Pagamento:</label>
-                <div class="flex items-center space-x-2 mb-2">
-                    <input type="radio" name="advancePayment" id="advanceYes" value="yes" class="form-radio h-4 w-4 text-blue-600" onchange="updatePaymentOptions()">
-                    <label for="advanceYes">Pedir adiantamento</label>
-                    <input type="number" id="advancePercentage" class="w-20 p-1 border border-gray-300 rounded-md" min="0" max="100" value="50" disabled>%
-                </div>
-                <div class="flex items-center space-x-2 mb-2">
-                    <input type="radio" name="advancePayment" id="advanceNo" value="no" class="form-radio h-4 w-4 text-blue-600" onchange="updatePaymentOptions()">
-                    <label for="advanceNo">Não pedir adiantamento</label>
-                </div>
-            </div>
-            <!-- Botão para salvar -->
-            <button type="button" onclick="savePaymentConditions()" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">
-                Salvar Condições
-            </button>
-        </form>
-    </div>
-</div>
-
 
     <div id="popupCliente" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg shadow-lg relative max-w-md w-full">
@@ -632,7 +549,7 @@ async function atualizarSeletoresTiposAplicacao() {
             const resultadoMobile = document.getElementById('resultadoMobile');
             
             if (resultadoDesktop) {
-                resultadoDesktop.textContent = ` Preço Total: R$ ${preco.toFixed(2)}`;
+                resultadoDesktop.textContent = `Total M²: ${m2.toFixed(2)} | Preço Total: R$ ${preco.toFixed(2)}`;
             }
             if (resultadoMobile) {
                 resultadoMobile.textContent = `Total M²: ${m2.toFixed(2)} | R$ ${preco.toFixed(2)}`;
@@ -1459,49 +1376,40 @@ function duplicarMedidas() {
         }
 
         async function calculateTotal() {
-    const medidaGroups = document.querySelectorAll('#medidasContainer > div');
-    let totalM2 = 0;
-    let precoTotal = 0;
+            const medidaGroups = document.querySelectorAll('#medidasContainer > div');
+            let totalM2 = 0;
+            let precoTotal = 0;
 
-    for (const group of medidaGroups) {
-        const isChecked = group.querySelector('input[type="checkbox"]').checked;
-        const largura = parseFloat(group.querySelector('.largura-input').value) || 0;
-        const altura = parseFloat(group.querySelector('.altura-input').value) || 0;
-        const quantidade = parseInt(group.querySelector('.quantidade-input').value) || 0;
+            for (const group of medidaGroups) {
+                const isChecked = group.querySelector('input[type="checkbox"]').checked;
+                const largura = parseFloat(group.querySelector('.largura-input').value) || 0;
+                const altura = parseFloat(group.querySelector('.altura-input').value) || 0;
+                const quantidade = parseInt(group.querySelector('.quantidade-input').value) || 0;
 
-        if (isChecked && largura > 0 && altura > 0 && quantidade > 0) {
-            const peliculaNome = group.querySelector('.pelicula-select').value;
-            let pelicula = peliculas.find(p => p.nome === peliculaNome);
-            
-            if (!pelicula) {
-                const peliculasPersonalizadas = await carregarPeliculasPersonalizadasDoIndexedDB();
-                pelicula = peliculasPersonalizadas.find(p => p.nome === peliculaNome);
+                if (isChecked && largura > 0 && altura > 0 && quantidade > 0) {
+                    const peliculaNome = group.querySelector('.pelicula-select').value;
+                    let pelicula = peliculas.find(p => p.nome === peliculaNome);
+                    
+                    if (!pelicula) {
+                        const peliculasPersonalizadas = await carregarPeliculasPersonalizadasDoIndexedDB();
+                        pelicula = peliculasPersonalizadas.find(p => p.nome === peliculaNome);
+                    }
+
+                    const area = largura * altura * quantidade; // Convertendo para m²
+                    const preco = pelicula ? area * pelicula.preco : 0;
+
+                    totalM2 += area;
+                    precoTotal += preco;
+
+                    group.querySelector('input[placeholder="M²"]').value = area.toFixed(2);
+                } else {
+                    group.querySelector('input[placeholder="M²"]').value = '0.00';
+                }
             }
 
-            const area = largura * altura * quantidade; // Área em cm²
-            const preco = pelicula ? area * pelicula.preco : 0;
-
-            totalM2 += area;
-            precoTotal += preco;
-
-            group.querySelector('input[placeholder="M²"]').value = area.toFixed(2);
-        } else {
-            group.querySelector('input[placeholder="M²"]').value = '0.00';
+            updateResultado(totalM2, precoTotal);
+            await saveMedidas();
         }
-    }
-
-    // Atualizar os valores na versão desktop
-    updateResultado(totalM2 / 10000, precoTotal); // Convertendo cm² para m²
-
-    // Atualizar os valores na versão mobile
-    const resultadoMobile = document.getElementById('resultadoMobile');
-    if (resultadoMobile) {
-        // Atualizar o texto dentro do div
-        resultadoMobile.querySelector('div').textContent = `Total M²: ${(totalM2 / 10000).toFixed(2)} | R$ ${precoTotal.toFixed(2)}`;
-    }
-
-    await saveMedidas();
-}
 
         function toggleAdditionalFields(button) {
             const fields = button.closest('.bg-white').querySelector('.additional-fields');
@@ -1883,143 +1791,8 @@ async function ativarAplicativo() {
             });
         }
 
-        // Variáveis para armazenar as opções selecionadas
-let paymentConditions = {
-    paymentOptionInstallments: false,
-    installments: 1,
-    paymentOptionPix: false,
-    paymentOptionBoleto: false,
-    boletos: 1,
-    advancePayment: 'no',
-    advancePercentage: 50
-};
-
-// Função para abrir o popup
-document.getElementById('paymentConditionsButton').addEventListener('click', openPaymentPopup);
-// Event listener para o botão de condições de pagamento na versão mobile
-document.getElementById('paymentConditionsButtonMobile').addEventListener('click', openPaymentPopup);
-
-
-function openPaymentPopup() {
-    // Carregar as configurações salvas
-    loadPaymentConditions();
-
-    // Atualizar os campos do popup com as configurações carregadas
-    document.getElementById('paymentOptionInstallments').checked = paymentConditions.paymentOptionInstallments;
-    document.getElementById('installmentsSelect').value = paymentConditions.installments;
-    document.getElementById('installmentsSelect').disabled = !paymentConditions.paymentOptionInstallments;
-
-    document.getElementById('paymentOptionPix').checked = paymentConditions.paymentOptionPix;
-
-    document.getElementById('paymentOptionBoleto').checked = paymentConditions.paymentOptionBoleto;
-    document.getElementById('boletoSelect').value = paymentConditions.boletos;
-    document.getElementById('boletoSelect').disabled = !paymentConditions.paymentOptionBoleto;
-
-    document.getElementById('advanceYes').checked = paymentConditions.advancePayment === 'yes';
-    document.getElementById('advanceNo').checked = paymentConditions.advancePayment === 'no';
-    document.getElementById('advancePercentage').value = paymentConditions.advancePercentage;
-    document.getElementById('advancePercentage').disabled = paymentConditions.advancePayment !== 'yes';
-
-    // Atualizar os valores exibidos
-    updatePaymentOptions();
-
-    document.getElementById('paymentPopup').classList.remove('hidden');
-}
-
-function closePaymentPopup() {
-    document.getElementById('paymentPopup').classList.add('hidden');
-}
-
-// Função para atualizar os campos com base nas seleções
-function updatePaymentOptions() {
-    const totalPrice = getTotalPrice(); // Função que retorna o preço total
-
-    const paymentOptionInstallments = document.getElementById('paymentOptionInstallments').checked;
-    const installmentsSelect = document.getElementById('installmentsSelect');
-    installmentsSelect.disabled = !paymentOptionInstallments;
-
-    const installments = parseInt(installmentsSelect.value);
-    const installmentValue = (totalPrice / installments).toFixed(2);
-    document.getElementById('installmentValue').textContent = paymentOptionInstallments ? `(${installments}x de R$ ${installmentValue} Sem Juros)` : '';
-
-    const paymentOptionPix = document.getElementById('paymentOptionPix').checked;
-    document.getElementById('pixValue').textContent = paymentOptionPix ? `(R$ ${totalPrice.toFixed(2)})` : '';
-
-    const paymentOptionBoleto = document.getElementById('paymentOptionBoleto').checked;
-    const boletoSelect = document.getElementById('boletoSelect');
-    boletoSelect.disabled = !paymentOptionBoleto;
-
-    const boletos = parseInt(boletoSelect.value);
-    const boletoValue = (totalPrice / boletos).toFixed(2);
-    document.getElementById('boletoValue').textContent = paymentOptionBoleto ? `(${boletos}x de R$ ${boletoValue})` : '';
-
-    const advancePayment = document.querySelector('input[name="advancePayment"]:checked').value;
-    const advancePercentage = document.getElementById('advancePercentage');
-    advancePercentage.disabled = advancePayment !== 'yes';
-}
-
-// Função para salvar as condições de pagamento
-function savePaymentConditions() {
-    paymentConditions.paymentOptionInstallments = document.getElementById('paymentOptionInstallments').checked;
-    paymentConditions.installments = parseInt(document.getElementById('installmentsSelect').value);
-
-    paymentConditions.paymentOptionPix = document.getElementById('paymentOptionPix').checked;
-
-    paymentConditions.paymentOptionBoleto = document.getElementById('paymentOptionBoleto').checked;
-    paymentConditions.boletos = parseInt(document.getElementById('boletoSelect').value);
-
-    paymentConditions.advancePayment = document.querySelector('input[name="advancePayment"]:checked').value;
-    paymentConditions.advancePercentage = parseInt(document.getElementById('advancePercentage').value);
-
-    // Salvar no localStorage (ou IndexedDB se preferir)
-    localStorage.setItem('paymentConditions', JSON.stringify(paymentConditions));
-
-    // Fechar o popup
-    closePaymentPopup();
-
-    alert('Condições de pagamento salvas com sucesso!');
-}
-
-// Função para carregar as condições de pagamento salvas
-function loadPaymentConditions() {
-    const savedConditions = JSON.parse(localStorage.getItem('paymentConditions'));
-    if (savedConditions) {
-        paymentConditions = savedConditions;
-    }
-}
-
-// Atualizar os campos quando houver mudanças
-document.getElementById('paymentOptionInstallments').addEventListener('change', updatePaymentOptions);
-document.getElementById('installmentsSelect').addEventListener('change', updatePaymentOptions);
-
-document.getElementById('paymentOptionPix').addEventListener('change', updatePaymentOptions);
-
-document.getElementById('paymentOptionBoleto').addEventListener('change', updatePaymentOptions);
-document.getElementById('boletoSelect').addEventListener('change', updatePaymentOptions);
-
-document.getElementsByName('advancePayment').forEach(element => {
-    element.addEventListener('change', updatePaymentOptions);
-});
-
-document.getElementById('advancePercentage').addEventListener('input', updatePaymentOptions);
-
-// Função para obter o preço total
-function getTotalPrice() {
-    const totalText = document.getElementById('resultadoDesktop').textContent;
-    const match = totalText.match(/R\$ (\d+,\d+)/);
-    if (match) {
-        const totalPrice = parseFloat(match[1].replace('.', '').replace(',', '.'));
-        return totalPrice;
-    }
-    return 0;
-}
-
-
-      
-       // Função para gerar PDF
-
-// Função para gerar PDF
-async function generatePDF_v3_0() {
+        // Função para gerar PDF
+        async function generatePDF_v3_0() {
     try {
         const clienteNome = clienteSelect.value;
         if (!clienteNome) {
@@ -2127,9 +1900,9 @@ async function generatePDF_v3_0() {
             doc.line(margin, y, pageWidth - margin, y);
             doc.setTextColor(...colors.primary);
             doc.setFont("helvetica", 'bold');
-            doc.setFontSize(12); // Tamanho de fonte padronizado
-            safeText(title, margin, y + 7);
-            return y + 15;
+            doc.setFontSize(14);
+            safeText(title, margin, y + 10);
+            return y + 20;
         }
 
         async function addCover() {
@@ -2140,12 +1913,12 @@ async function generatePDF_v3_0() {
             await addLogo(10, 20, 40, 40);
             doc.setTextColor(...colors.primary);
             doc.setFont("helvetica", 'bold');
-            doc.setFontSize(22); // Tamanho de fonte padronizado
+            doc.setFontSize(24);
             safeText("PROPOSTA DE", 70, 40);
             safeText("ORÇAMENTO", 70, 55);
             doc.setTextColor(...colors.secondary);
             doc.setFont("helvetica", 'italic');
-            doc.setFontSize(12); // Tamanho de fonte padronizado
+            doc.setFontSize(14);
             safeText("Soluções em Películas de Alta Qualidade", 70, 70);
             doc.setTextColor(...colors.text);
             doc.setFont("helvetica", 'normal');
@@ -2186,7 +1959,7 @@ async function generatePDF_v3_0() {
             let pageNumber = 2;
 
             y = addSectionTitle("Orçamento Detalhado", y);
-            y += 5;
+            y += 10;
 
             const medidaGroups = document.querySelectorAll('#medidasContainer > div');
 
@@ -2220,15 +1993,15 @@ async function generatePDF_v3_0() {
             function addMedidasTable(medidas, peliculaNome) {
                 const headers = ["Item", "Dimensões", "Ambiente", "Tipo", "Área", "Preço"];
                 const colWidths = [15, 30, 40, 40, 20, 30];
-
+                
                 doc.setTextColor(...colors.primary);
                 doc.setFont("helvetica", 'bold');
                 doc.setFontSize(12);
                 safeText(peliculaNome, margin, y);
-                y += 7;
+                y += 10;
 
                 doc.setFillColor(...colors.primary);
-                doc.rect(margin, y, pageWidth - 2 * margin, 8, 'F');
+                doc.rect(margin, y, pageWidth - 2*margin, 8, 'F');
                 doc.setTextColor(...colors.white);
                 doc.setFont("helvetica", 'bold');
                 doc.setFontSize(9);
@@ -2250,7 +2023,7 @@ async function generatePDF_v3_0() {
                     if (y > pageHeight - 60) {
                         y = addPage(++pageNumber);
                         doc.setFillColor(...colors.primary);
-                        doc.rect(margin, y, pageWidth - 2 * margin, 8, 'F');
+                        doc.rect(margin, y, pageWidth - 2*margin, 8, 'F');
                         doc.setTextColor(...colors.white);
                         doc.setFont("helvetica", 'bold');
                         doc.setFontSize(9);
@@ -2265,7 +2038,7 @@ async function generatePDF_v3_0() {
                     }
 
                     doc.setFillColor(...(index % 2 === 0 ? zebraColor1 : zebraColor2));
-                    doc.rect(margin, y - 2, pageWidth - 2 * margin, 10, 'F');
+                    doc.rect(margin, y - 2, pageWidth - 2*margin, 10, 'F');
 
                     doc.setTextColor(...colors.text);
 
@@ -2303,163 +2076,130 @@ async function generatePDF_v3_0() {
             Object.entries(medidasPorPelicula).forEach(([peliculaNome, medidas], index) => {
                 if (index > 0) y = addPage(++pageNumber);
                 y = addMedidasTable(medidas, peliculaNome);
-
+                
                 const totalPelicula = {
                     totalM2: medidas.reduce((sum, group) => sum + (parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0), 0),
                     precoTotal: medidas.reduce((sum, group) => {
                         const area = parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0;
                         const pelicula = peliculas.find(p => p.nome === peliculaNome);
-                        return sum + (pelicula ? area * pelicula.preco : 0);
-                    }, 0)
-                };
+                return sum + (pelicula ? area * pelicula.preco : 0);
+            }, 0)
+        };
 
-                // Acumular nos totais gerais
-                totaisGerais.totalM2 += totalPelicula.totalM2;
-                totaisGerais.precoTotal += totalPelicula.precoTotal;
+        // Acumular nos totais gerais
+        totaisGerais.totalM2 += totalPelicula.totalM2;
+        totaisGerais.precoTotal += totalPelicula.precoTotal;
 
-                y += 5;
-                doc.setDrawColor(...colors.secondary);
-                doc.setLineWidth(0.5);
-                doc.line(margin, y, pageWidth - margin, y);
-                doc.setTextColor(...colors.secondary);
-                doc.setFont("helvetica", 'bold');
-                doc.setFontSize(10);
-                safeText(`Subtotal ${peliculaNome}:`, margin, y + 7);
-                safeText(`Área: ${totalPelicula.totalM2.toFixed(2)} m²`, pageWidth / 2, y + 7);
-                safeText(`R$ ${totalPelicula.precoTotal.toFixed(2)}`, pageWidth - margin, y + 7, { align: 'right' });
-                y += 15;
-            });
+        console.log("Subtotal:", peliculaNome, "Área:", totalPelicula.totalM2, "Preço:", totalPelicula.precoTotal);
+        console.log("Total Geral Atualizado:", totaisGerais.totalM2, totaisGerais.precoTotal);
 
-            if (y > pageHeight - 60) {
-                y = addPage(++pageNumber);
-            }
+        y += 5;
+        doc.setDrawColor(...colors.secondary);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, pageWidth - margin, y);
+        doc.setTextColor(...colors.secondary);
+        doc.setFont("helvetica", 'bold');
+        doc.setFontSize(10);
+        safeText(`Subtotal ${peliculaNome}:`, margin, y + 10);
+        safeText(`Área: ${totalPelicula.totalM2.toFixed(2)} m²`, pageWidth / 2, y + 10);
+        safeText(`R$ ${totalPelicula.precoTotal.toFixed(2)}`, pageWidth - margin, y + 10, { align: 'right' });
+        y += 15;
+    });
 
-            y = addSectionTitle("Total Geral do Orçamento", y);
-            y += 5;
-            doc.setDrawColor(...colors.primary);
-            doc.setLineWidth(1);
-            doc.line(margin, y, pageWidth - margin, y);
-            y += 5;
-            doc.setTextColor(...colors.primary);
-            doc.setFont("helvetica", 'bold');
-            doc.setFontSize(12);
-            safeText("Total Geral:", margin, y + 10);
-            safeText(`Área Total: ${totaisGerais.totalM2.toFixed(2)} m²`, margin, y + 20);
-            safeText(`Preço Total: R$ ${totaisGerais.precoTotal.toFixed(2)}`, pageWidth - margin, y + 20, { align: 'right' });
+    console.log("Final Total Geral:", totaisGerais.totalM2, totaisGerais.precoTotal);
 
-            y += 30;
-
-            // Forçar quebra de página antes das condições de pagamento
-            y = addPage(++pageNumber);
-
-            // Adicionar as condições de pagamento
-            y = addPaymentConditions(y, totaisGerais, pageNumber);
-
-            y += 20;
-            doc.setDrawColor(...colors.primary);
-            doc.setLineWidth(0.5);
-            doc.line(margin, y, pageWidth / 2 - 20, y);
-            doc.setFont("helvetica", 'bold');
-            doc.setFontSize(11);
-            safeText(infoUsuario.nome || '', margin, y + 6);
-            doc.setFont("helvetica", 'normal');
-            doc.setFontSize(10);
-            safeText(infoUsuario.empresa || '', margin, y + 12);
-            safeText(infoUsuario.telefone || '', margin, y + 18);
-            safeText(infoUsuario.email || '', margin, y + 24);
-        }
-
-        // Função modificada para adicionar as condições de pagamento
-        function addPaymentConditions(y, totaisGerais, pageNumber) {
-            // Carregar as condições de pagamento salvas
-            loadPaymentConditions();
-
-            y = addSectionTitle("Condições de Pagamento e Informações Relevantes", y);
-            y += 5;
-
-            doc.setTextColor(...colors.text);
-            doc.setFont("helvetica", 'normal');
-            doc.setFontSize(10);
-
-            const condicoesPagamento = [];
-
-            // Formas de Pagamento
-            condicoesPagamento.push("1. Formas de Pagamento Aceitas:");
-            if (paymentConditions.paymentOptionInstallments) {
-                const installmentValue = (totaisGerais.precoTotal / paymentConditions.installments).toFixed(2);
-                condicoesPagamento.push(`   • ${paymentConditions.installments}x de R$ ${installmentValue} Sem Juros`);
-            }
-            if (paymentConditions.paymentOptionPix) {
-                condicoesPagamento.push(`   • Pix: R$ ${totaisGerais.precoTotal.toFixed(2)}`);
-            }
-            if (paymentConditions.paymentOptionBoleto) {
-                const boletoValue = (totaisGerais.precoTotal / paymentConditions.boletos).toFixed(2);
-                condicoesPagamento.push(`   • Boleto Bancário: ${paymentConditions.boletos}x de R$ ${boletoValue}`);
-            }
-            if (!paymentConditions.paymentOptionInstallments && !paymentConditions.paymentOptionPix && !paymentConditions.paymentOptionBoleto) {
-                condicoesPagamento.push("   • N/A");
-            }
-            condicoesPagamento.push("");
-
-            // Cronograma de Pagamento
-            condicoesPagamento.push("2. Cronograma de Pagamento:");
-            if (paymentConditions.advancePayment === 'yes') {
-                const advanceAmount = (totaisGerais.precoTotal * (paymentConditions.advancePercentage / 100)).toFixed(2);
-                const remainingPercentage = 100 - paymentConditions.advancePercentage;
-                const remainingAmount = (totaisGerais.precoTotal * (remainingPercentage / 100)).toFixed(2);
-                condicoesPagamento.push(`   • ${paymentConditions.advancePercentage}% (R$ ${advanceAmount}) do valor como adiantamento na aprovação do orçamento`);
-                condicoesPagamento.push(`   • ${remainingPercentage}% (R$ ${remainingAmount}) restantes após a conclusão dos serviços`);
-            } else {
-                condicoesPagamento.push("   • Pagamento total após a conclusão dos serviços");
-            }
-            condicoesPagamento.push("");
-
-            // Outras condições (mantenha as mesmas ou personalize conforme necessário)
-            condicoesPagamento.push("3. Prazo de Instalação:");
-            condicoesPagamento.push("   • A ser definido em comum acordo, conforme disponibilidade");
-            condicoesPagamento.push("");
-            condicoesPagamento.push("4. Validade da Proposta:");
-            condicoesPagamento.push("   • Esta proposta é válida por 60 dias a partir da data de emissão");
-            condicoesPagamento.push("");
-            condicoesPagamento.push("5. Garantia:");
-            condicoesPagamento.push("   • 2 a 10 anos contra defeitos de fabricação");
-            condicoesPagamento.push("   • 10 semanas contra defeitos de aplicação");
-            condicoesPagamento.push("");
-            condicoesPagamento.push("6. Observações Importantes:");
-            condicoesPagamento.push("   • Quaisquer alterações no projeto podem resultar em ajustes no orçamento");
-            condicoesPagamento.push("   • A instalação está sujeita às condições climáticas favoráveis");
-            condicoesPagamento.push("   • O cliente é responsável por fornecer acesso adequado ao local de instalação");
-
-            const lineHeight = 6;
-            condicoesPagamento.forEach((condicao) => {
-                if (y > pageHeight - 40) {
-                    y = addPage(++pageNumber);
-                    y = addSectionTitle("Condições de Pagamento (continuação)", y);
-                    y += 5;
-                }
-                safeText(condicao, margin, y);
-                y += lineHeight;
-            });
-
-            return y;
-        }
-
-        await addCover();
-        addContent();
-
-        doc.save(`orcamento_${cliente.nome.replace(/\s+/g, '_').toLowerCase()}.pdf`);
-        console.log('PDF gerado com sucesso!');
-    } catch (error) {
-        console.error("Erro ao gerar PDF:", error);
-
-        if (error.message && error.message.includes("Cannot read properties of undefined")) {
-            alert("Erro ao gerar o PDF: Dados da empresa incompletos. Por favor, preencha todas as informações da empresa no menu de configurações do usuário antes de gerar o PDF.");
-        } else {
-            alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique se todas as informações necessárias foram preenchidas e tente novamente.");
-        }
+    if (y > pageHeight - 60) {
+        y = addPage(++pageNumber);
     }
+
+    y = addSectionTitle("Total Geral do Orçamento", y);
+    y += 10;
+    doc.setDrawColor(...colors.primary);
+    doc.setLineWidth(1);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 5;
+    doc.setTextColor(...colors.primary);
+    doc.setFont("helvetica", 'bold');
+    doc.setFontSize(12);
+    safeText("Total Geral:", margin, y + 10);
+    safeText(`Área Total: ${totaisGerais.totalM2.toFixed(2)} m²`, margin, y + 20);
+    safeText(`Preço Total: R$ ${totaisGerais.precoTotal.toFixed(2)}`, pageWidth - margin, y + 20, { align: 'right' });
+
+    y += 30;
+
+    y = addPage(++pageNumber);
+    y = addSectionTitle("Condições de Pagamento e Informações Relevantes", y);
+    y += 10;
+
+    doc.setTextColor(...colors.text);
+    doc.setFont("helvetica", 'normal');
+    doc.setFontSize(10);
+
+    const condicoesPagamento = [
+        "1. Formas de Pagamento Aceitas:",
+        "   • Transferência bancária e Pix",
+        "   • Cartão de crédito (em até 3x sem juros)",
+        "   • Boleto bancário",
+        "",
+        "2. Cronograma de Pagamento:",
+        "   • 50% do valor quando acima de R$ 2.500 na aprovação do orçamento",
+        "   • 50% restantes após a conclusão dos serviços",
+        "",
+        "3. Prazo de Instalação:",
+        "   • A ser definido em comum acordo, conforme disponibilidade",
+        "",
+        "4. Validade da Proposta:",
+        "   • Esta proposta é válida por 60 dias a partir da data de emissão",
+        "",
+        "5. Garantia:",
+        "   • 2 a 10 anos contra defeitos de fabricação",
+        "   • 10 semanas contra defeitos de aplicação",
+        "",
+        "6. Observações Importantes:",
+        "   • Quaisquer alterações no projeto podem resultar em ajustes no orçamento",
+        "   • A instalação está sujeita às condições climáticas favoráveis",
+        "   • O cliente é responsável por fornecer acesso adequado ao local de instalação"
+    ];
+
+    const lineHeight = 6;
+    condicoesPagamento.forEach((condicao, index) => {
+        if (y > pageHeight - 40) {
+            y = addPage(++pageNumber);
+            y = addSectionTitle("Condições de Pagamento (continuação)", y);
+            y += 10;
+        }
+        safeText(condicao, margin, y);
+        y += lineHeight;
+    });
+
+    y += 20;
+    doc.setDrawColor(...colors.primary);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageWidth / 2 - 20, y);
+    doc.setFont("helvetica", 'bold');
+    doc.setFontSize(11);
+    safeText(infoUsuario.nome || '', margin, y + 6);
+    doc.setFont("helvetica", 'normal');
+    doc.setFontSize(10);
+    safeText(infoUsuario.empresa || '', margin, y + 12);
+    safeText(infoUsuario.telefone || '', margin, y + 18);
+    safeText(infoUsuario.email || '', margin, y + 24);
 }
 
+    await addCover();
+    addContent();
+
+    doc.save(`orcamento_${cliente.nome.replace(/\s+/g, '_').toLowerCase()}.pdf`);
+    console.log('PDF gerado com sucesso!');
+} catch (error) {
+    console.error("Erro ao gerar PDF:", error);
+    
+    if (error.message && error.message.includes("Cannot read properties of undefined")) {
+        alert("Erro ao gerar o PDF: Dados da empresa incompletos. Por favor, preencha todas as informações da empresa no menu de configurações do usuário antes de gerar o PDF.");
+    } else {
+        alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique se todas as informações necessárias foram preenchidas e tente novamente.");
+    }
+}}
 
         // Funções auxiliares para manipulação do IndexedDB
         async function salvarClienteNoIndexedDB(cliente) {
