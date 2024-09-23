@@ -15,10 +15,13 @@
     <link rel="manifest" href="/peliqueiros-br/manifest.json">
     <meta name="theme-color" content="#000000">
     <style>
+
+        
         /* Certificando que o popup será sempre visível */
         #popupCliente, #popupUsuario {
             z-index: 10000; /* Elevando o nível do popup */
         }
+        
 
           /* Animação de carregamento */
     .loader {
@@ -60,12 +63,13 @@
                         <select id="clienteSelect" class="flex-grow p-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="onClienteChange()">
                             <option value="">Selecione um cliente</option>
                         </select>
-                        <button id="addNewClienteBtn" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 shadow-md sm:hidden">
-                            <i class="fas fa-user-plus"></i>
-                        </button>
-                        <button id="addNewClienteBtnDesktop" class="hidden sm:block w-auto p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 shadow-md">
-                            <i class="fas fa-user-plus mr-2"></i> Adicionar Cliente
-                        </button>
+                      <!-- Botão para adicionar novo cliente -->
+                      <button id="addNewClienteBtn" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 shadow-md sm:hidden" onclick="abrirPopup('adicionar')">
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                    <button id="addNewClienteBtnDesktop" class="hidden sm:block w-auto p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 shadow-md">
+                        <i class="fas fa-user-plus mr-2"></i> Adicionar Cliente
+                    </button>
                     </div>
 
      <!-- ANIMAÇÃO ENTRADA CARREGANDO -->
@@ -76,32 +80,73 @@
     </div>
 </div>
 
-<!-- Contêiner principal -->
-<div class="flex items-center justify-between mt-2">
-    <!-- Ícone de Localização à Esquerda -->
-    <div class="flex items-center">
-        <button onclick="abrirMapa()" class="p-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300 shadow-sm">
-            <i class="fas fa-map-marker-alt"></i>
+<!-- Contêiner Principal dos Ícones -->
+<div class="flex justify-between items-center w-full mt-4 px-0">
+    
+    <!-- Botão Usuário à Esquerda -->
+    <div class="relative group">
+        <button 
+            onclick="abrirPopupUsuario()" 
+            class="p-2 bg-gray-200 text-purple-500 rounded-md hover:bg-gray-300 transition duration-300 shadow focus:outline-none focus:ring-2 focus:ring-purple-400" 
+            aria-label="Configurações do Usuário"
+        >
+            <i class="fas fa-user-cog fa-lg"></i>
         </button>
+        <!-- Tooltip Usuário -->
+        <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            Configurações do Usuário
+        </div>
     </div>
 
-    <!-- Ícones à Direita -->
-    <div id="editIconContainer" class="flex items-center space-x-2">
-        <button onclick="abrirPopup('editar')" class="p-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300 shadow-sm">
-            <i class="fas fa-edit"></i>
-        </button>
-        <button onclick="confirmClearMedidas()" class="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 shadow-sm">
-            <i class="fas fa-trash-alt"></i>
-        </button>
-        <button onclick="abrirPopupUsuario()" class="p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-300 shadow-sm">
-            <i class="fas fa-user-cog"></i>
-        </button>
+    <!-- Grupo de Ações à Direita (Mapa, Editar, Excluir) -->
+    <div class="flex space-x-2">
+        <!-- Botão Mapa -->
+        <div class="relative group">
+            <button 
+                onclick="abrirMapa()" 
+                class="p-2 bg-gray-200 text-blue-500 rounded-md hover:bg-gray-300 transition duration-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                aria-label="Abrir Mapa"
+            >
+                <i class="fas fa-map-marker-alt fa-lg"></i>
+            </button>
+            <!-- Tooltip Mapa -->
+            <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                Abrir Mapa
+            </div>
+        </div>
+
+        <!-- Botão Editar -->
+        <div class="relative group">
+            <button 
+                onclick="abrirPopup('editar')" 
+                class="p-2 bg-gray-200 text-yellow-500 rounded-md hover:bg-gray-300 transition duration-300 shadow focus:outline-none focus:ring-2 focus:ring-yellow-400" 
+                aria-label="Editar Cliente"
+            >
+                <i class="fas fa-edit fa-lg"></i>
+            </button>
+            <!-- Tooltip Editar -->
+            <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                Editar Cliente
+            </div>
+        </div>
+
+        <!-- Botão Excluir -->
+        <div class="relative group">
+            <button 
+                onclick="confirmClearMedidas()" 
+                class="p-2 bg-gray-200 text-red-500 rounded-md hover:bg-gray-300 transition duration-300 shadow focus:outline-none focus:ring-2 focus:ring-red-400" 
+                aria-label="Excluir Cliente e Medidas"
+            >
+                <i class="fas fa-trash-alt fa-lg"></i>
+            </button>
+            <!-- Tooltip Excluir -->
+            <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                Excluir Cliente e Medidas
+            </div>
+        </div>
     </div>
 </div>
-
-    
-                    
-                </div>
+</div>
 
                 <!-- Conteúdo scrollável (grupos de medidas) -->
                 <div id="medidasContainer" class="space-y-2 w-full pb-20 sm:pb-0">
@@ -151,83 +196,221 @@
         </div>
     </div>
 
-    <div id="popupUsuario" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center overflow-y-auto py-5">
-        <div class="bg-white rounded-lg shadow-lg relative w-full max-w-md m-2">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-4">Cadastro de Usuário</h2>
-                <div class="max-h-70vh overflow-y-auto pr-2">
-                    <form id="userForm" class="space-y-4">
-                        <div>
-                            <label for="logo" class="block text-sm font-medium text-gray-700">Logotipo:</label>
-                            <input type="file" id="logo" accept="image/*" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                            <img id="logoPreview" src="" alt="Preview do logotipo" class="mt-2 hidden max-h-20">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Cores:</label>
-                            <div class="flex items-center space-x-4 mt-1">
-                                <div>
-                                    <span class="text-sm text-gray-500">Primária:</span>
-                                    <div id="primaryColorPreview" class="w-8 h-8 rounded-full border border-gray-300 cursor-pointer"></div>
-                                    <input type="color" id="primaryColor" class="hidden">
-                                </div>
-                                <div>
-                                    <span class="text-sm text-gray-500">Secundária:</span>
-                                    <div id="secondaryColorPreview" class="w-8 h-8 rounded-full border border-gray-300 cursor-pointer"></div>
-                                    <input type="color" id="secondaryColor" class="hidden">
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">Nome:</label>
-                            <input type="text" id="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="companyName" class="block text-sm font-medium text-gray-700">Nome da empresa:</label>
-                            <input type="text" id="companyName" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700">Telefone:</label>
-                            <input type="tel" id="phone" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
-                            <input type="email" id="email" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700">Endereço:</label>
-                            <input type="text" id="address" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="cpfCnpj" class="block text-sm font-medium text-gray-700">CPF/CNPJ:</label>
-                            <input type="text" id="cpfCnpj" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
-                <button id="saveUserInfoButton" type="submit" form="userForm" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">Salvar</button>
-            </div>
-        </div>
-    </div>
 
-    <div id="popupCliente" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg relative max-w-md w-full">
-            <span class="absolute top-2 right-2 text-2xl font-bold cursor-pointer" onclick="fecharPopup()">&times;</span>
-            <h2 id="popupTitulo" class="text-xl font-semibold mb-4">Adicionar Novo Cliente</h2>
-            <form id="clienteForm" class="space-y-4">
-                <input type="text" id="popupClienteNome" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nome do Cliente" required>
-                <input type="tel" id="popupClienteTelefone" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Telefone" inputmode="tel" required>
-                <input type="text" id="popupClienteEndereco" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Endereço" required>
-                <input type="text" id="popupClienteCPF" class="w-full p-2 border border-gray-300 rounded-md" placeholder="CPF" inputmode="numeric">
-                <input type="text" id="popupClienteCNPJ" class="w-full p-2 border border-gray-300 rounded-md" placeholder="CNPJ" inputmode="numeric">
-                <button type="submit" id="popupClienteBtnSalvar" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">
-                    Salvar Cliente
-                </button>
+<!-- Popup de Cadastro de Usuário -->
+<div id="popupUsuario" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ease-in-out z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out max-w-lg w-full mx-4 sm:mx-0">
+        
+        <!-- Cabeçalho do Popup -->
+        <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Minha Empresa</h2>
+            <button onclick="fecharPopupUsuario()" class="text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Corpo do Popup -->
+        <div class="p-6 space-y-6 max-h-70vh overflow-y-auto">
+            <form id="userForm" class="space-y-4">
+                <!-- Campo de Logotipo -->
+                <div>
+                    <label for="logo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logotipo</label>
+                    <input type="file" id="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 dark:bg-gray-700 dark:text-gray-100">
+                    <img id="logoPreview" src="" alt="Preview do logotipo" class="mt-2 hidden max-h-20 rounded-md">
+                </div>
+                
+                <!-- Campo de Cores -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cores</label>
+                    <div class="flex items-center space-x-6 mt-2">
+                        <!-- Cor Primária -->
+                        <div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Primária</span>
+                            <div id="primaryColorPreview" class="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 cursor-pointer mt-1" onclick="document.getElementById('primaryColor').click()"></div>
+                            <input type="color" id="primaryColor" class="hidden">
+                        </div>
+                        <!-- Cor Secundária -->
+                        <div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Secundária</span>
+                            <div id="secondaryColorPreview" class="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 cursor-pointer mt-1" onclick="document.getElementById('secondaryColor').click()"></div>
+                            <input type="color" id="secondaryColor" class="hidden">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Campos de Informação -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome</label>
+                    <input type="text" id="name" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                </div>
+                
+                <div>
+                    <label for="companyName" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome da Empresa</label>
+                    <input type="text" id="companyName" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                </div>
+                
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefone</label>
+                    <input type="tel" id="phone" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                    <input type="email" id="email" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                </div>
+                
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Endereço</label>
+                    <input type="text" id="address" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                </div>
+                
+                <div>
+                    <label for="cpfCnpj" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CPF/CNPJ</label>
+                    <input type="text" id="cpfCnpj" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                </div>
             </form>
         </div>
+        
+        <!-- Rodapé do Popup com Salvar e Ícone de Cifrão -->
+        <div class="flex justify-end items-center p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 space-x-4">
+            <button 
+                id="saveUserInfoButton" 
+                type="submit" 
+                form="userForm" 
+                class="flex-grow px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 shadow-md flex items-center justify-center space-x-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onclick="salvarUsuario()"
+            >
+                <span>Salvar</span>
+            </button>
+            <button 
+                onclick="abrirPopupPaymentMethods()" 
+                class="p-2 bg-gray-200 text-green-500 rounded-md hover:bg-gray-300 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                aria-label="Métodos de Pagamento"
+            >
+                <i class="fas fa-dollar-sign fa-lg"></i>
+            </button>
+        </div>
     </div>
+</div>
+
+
+    <!-- Popup de Formas de Pagamento -->
+<div id="popupPaymentMethods" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ease-in-out z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out max-w-md w-full mx-4 sm:mx-0">
+        <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Formas de Pagamento</h2>
+            <button onclick="fecharPopupPaymentMethods()" class="text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="paymentMethodsForm" class="p-6 space-y-4">
+            <!-- Pix -->
+            <div class="flex items-center">
+                <input type="checkbox" id="pix" name="payment_methods" value="pix" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                <label for="pix" class="ml-2 text-gray-700 dark:text-gray-300">Pix</label>
+            </div>
+            <!-- Boleto -->
+            <div class="flex items-center">
+                <input type="checkbox" id="boleto" name="payment_methods" value="boleto" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                <label for="boleto" class="ml-2 text-gray-700 dark:text-gray-300">Boleto</label>
+            </div>
+            <!-- Até 12x sem Juros -->
+            <div class="flex items-center">
+                <input type="checkbox" id="parcelado_sem_juros" name="payment_methods" value="parcelado_sem_juros" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                <label for="parcelado_sem_juros" class="ml-2 text-gray-700 dark:text-gray-300">Até 12x sem Juros</label>
+            </div>
+            <div class="ml-6">
+                <label for="parcelas_sem_juros" class="block text-sm text-gray-700 dark:text-gray-300">Número de Parcelas:</label>
+                <input type="number" id="parcelas_sem_juros" name="parcelas_sem_juros" min="1" max="12" placeholder="Até 12" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+            </div>
+            <!-- 12x com Juros -->
+            <div class="flex items-center">
+                <input type="checkbox" id="parcelado_com_juros" name="payment_methods" value="parcelado_com_juros" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                <label for="parcelado_com_juros" class="ml-2 text-gray-700 dark:text-gray-300">12x com Juros</label>
+            </div>
+            <div class="ml-6">
+                <label for="parcelas_com_juros" class="block text-sm text-gray-700 dark:text-gray-300">Número de Parcelas:</label>
+                <input type="number" id="parcelas_com_juros" name="parcelas_com_juros" min="1" max="12" placeholder="Até 12" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+            </div>
+            <div class="ml-6">
+                <label for="taxa_juros" class="block text-sm text-gray-700 dark:text-gray-300">Taxa de Juros: (%):</label>
+                <input type="number" id="taxa_juros" name="taxa_juros" step="0.01" min="0" placeholder="Ex: 2.99" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+            </div>
+              <!-- Novos Campos: Adiantamento em Porcentagem -->
+              <div class="flex items-center">
+                <input type="checkbox" id="solicitar_adiantamento" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                <label for="solicitar_adiantamento" class="ml-2 text-gray-700 dark:text-gray-300">Solicitar Adiantamento</label>
+                <input type="number" id="porcentagem_adiantamento" placeholder="Porcentagem (%)" class="ml-4 p-1 border border-gray-300 rounded-md w-24 hidden">
+            </div>
+
+            <!-- Novos Campos: Observação -->
+            <div class="flex items-center">
+                <input type="checkbox" id="adicionar_observacao" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                <label for="adicionar_observacao" class="ml-2 text-gray-700 dark:text-gray-300">Adicionar Observação</label>
+            </div>
+            <div id="campo_observacao" class="hidden">
+                <textarea id="observacao" placeholder="Escreva sua observação aqui..." class="w-full p-2 border border-gray-300 rounded-md"></textarea>
+            </div>
+            <!-- Botão de Salvar -->
+            <button type="submit" class="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 shadow-md">
+                Salvar
+            </button>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Popup de Cadastro de Cliente -->
+<div id="popupCliente" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ease-in-out z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out max-w-md w-full mx-4 sm:mx-0">
+        <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 id="popupTitulo" class="text-xl font-semibold text-gray-800 dark:text-gray-100">Adicionar Novo Cliente</h2>
+            <button onclick="fecharPopupCliente()" class="text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="clienteForm" class="p-6 space-y-4">
+            <div>
+                <label for="popupClienteNome" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome do Cliente</label>
+                <input type="text" id="popupClienteNome" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" placeholder="Nome do Cliente" required>
+            </div>
+            <div>
+                <label for="popupClienteTelefone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefone</label>
+                <input type="tel" id="popupClienteTelefone" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" placeholder="Telefone" inputmode="tel" required>
+            </div>
+            <div>
+                <label for="popupClienteEndereco" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Endereço</label>
+                <input type="text" id="popupClienteEndereco" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" placeholder="Endereço" required>
+            </div>
+            <!-- Campo Unificado CPF/CNPJ -->
+            <div>
+                <label for="popupClienteCpfCnpj" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CPF/CNPJ</label>
+                <input type="text" id="popupClienteCpfCnpj" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" placeholder="CPF ou CNPJ" inputmode="numeric">
+            </div>
+            
+            <!-- Novo Campo de Email -->
+            <div>
+                <label for="popupClienteEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                <input type="email" id="popupClienteEmail" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" placeholder="Email" required>
+            </div>
+            <button type="submit" id="popupClienteBtnSalvar" class="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 shadow-md">
+                Salvar Cliente
+            </button>
+        </form>
+    </div>
+</div>
 
     <script>
+  let currentEditPelicula = null;
+  let ultimaPeliculaSalva = null; // Variável global para rastrear a última película salva
+
         // Registro do Service Worker
         if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/peliqueiros-br/service-worker.js')
@@ -263,6 +446,8 @@
         splashScreen.style.display = 'none'; // ou use uma animação para fade-out
     });
     
+    let currentSelectForPelicula = null;
+
 
         // Array de películas predefinidas
         const peliculasPredefinidas = [
@@ -277,6 +462,7 @@
         let peliculas = [...peliculasPredefinidas];
         let clientes = [];
         let clienteSelecionado = '';
+      
 
   
 // Arrays para ambientes e tipos de aplicação
@@ -317,6 +503,264 @@ function abrirMapa() {
         console.error('Erro ao abrir o mapa:', error);
     });
 }
+
+
+// Função para abrir o popup de Formas de Pagamento
+function abrirPopupPaymentMethods() {
+    console.log('Abrindo popup de Formas de Pagamento');
+    // Fechar o popup de usuário
+    fecharPopupUsuario();
+    
+    // Abrir o popup de formas de pagamento
+    const popupPaymentMethods = document.getElementById('popupPaymentMethods');
+    if (popupPaymentMethods) {
+        popupPaymentMethods.classList.remove('hidden');
+        const modalContent = popupPaymentMethods.querySelector('div');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+        carregarFormasPagamento(); // Carrega as formas de pagamento ao abrir
+    } else {
+        console.error('Elemento popupPaymentMethods não encontrado');
+    }
+}
+
+
+
+// Função para fechar o popup de Formas de Pagamento
+function fecharPopupPaymentMethods() {
+    console.log('Fechando popup de Formas de Pagamento');
+    const popupPaymentMethods = document.getElementById('popupPaymentMethods');
+    if (popupPaymentMethods) {
+        const modalContent = popupPaymentMethods.querySelector('div');
+        modalContent.classList.add('scale-95');
+        modalContent.classList.remove('scale-100');
+        setTimeout(() => {
+            popupPaymentMethods.classList.add('hidden');
+            // Removido: abrirPopupUsuario();
+            console.log('Popup de Formas de Pagamento fechado');
+        }, 300); // Tempo deve coincidir com a duração da transição
+    } else {
+        console.error('Elemento popupPaymentMethods não encontrado para fechar');
+    }
+}
+
+
+
+// Função para carregar as formas de pagamento do IndexedDB
+async function carregarFormasPagamento() {
+    try {
+        const infoUsuario = await obterInformacoesUsuarioDoIndexedDB();
+        const formasPagamento = infoUsuario.payment_methods || [];
+
+        // Listagem de IDs dos checkboxes e inputs
+        const checkboxIds = ['pix', 'boleto', 'parcelado_sem_juros', 'parcelado_com_juros'];
+        const camposAdicionais = ['parcelas_sem_juros', 'parcelas_com_juros', 'taxa_juros'];
+        const adiantamentoCheckbox = document.getElementById('solicitar_adiantamento');
+        const porcentagemAdiantamentoInput = document.getElementById('porcentagem_adiantamento');
+        const observacaoCheckbox = document.getElementById('adicionar_observacao');
+        const observacaoDiv = document.getElementById('campo_observacao');
+        const observacaoInput = document.getElementById('observacao');
+
+        // Resetar todos os checkboxes e campos adicionais
+        checkboxIds.forEach(id => {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        });
+
+        camposAdicionais.forEach(id => {
+            const campo = document.getElementById(id);
+            if (campo) {
+                campo.value = '';
+            }
+        });
+
+        // Resetar os novos campos
+        adiantamentoCheckbox.checked = false;
+        porcentagemAdiantamentoInput.classList.add('hidden');
+        porcentagemAdiantamentoInput.value = '';
+
+        observacaoCheckbox.checked = false;
+        observacaoDiv.classList.add('hidden');
+        observacaoInput.value = '';
+
+        // Iterar sobre as formas de pagamento e marcar as selecionadas
+        formasPagamento.forEach(method => {
+            switch (method.tipo) {
+                case 'pix':
+                    const pixCheckbox = document.getElementById('pix');
+                    if (pixCheckbox) {
+                        pixCheckbox.checked = method.ativo;
+                    }
+                    break;
+                case 'boleto':
+                    const boletoCheckbox = document.getElementById('boleto');
+                    if (boletoCheckbox) {
+                        boletoCheckbox.checked = method.ativo;
+                    }
+                    break;
+                case 'parcelado_sem_juros':
+                    const parceladoSemJurosCheckbox = document.getElementById('parcelado_sem_juros');
+                    const parcelasSemJurosInput = document.getElementById('parcelas_sem_juros');
+                    if (parceladoSemJurosCheckbox) {
+                        parceladoSemJurosCheckbox.checked = method.ativo;
+                    }
+                    if (parcelasSemJurosInput) {
+                        parcelasSemJurosInput.value = method.parcelas_max || '';
+                    }
+                    break;
+                case 'parcelado_com_juros':
+                    const parceladoComJurosCheckbox = document.getElementById('parcelado_com_juros');
+                    const parcelasComJurosInput = document.getElementById('parcelas_com_juros');
+                    const taxaJurosInput = document.getElementById('taxa_juros');
+                    if (parceladoComJurosCheckbox) {
+                        parceladoComJurosCheckbox.checked = method.ativo;
+                    }
+                    if (parcelasComJurosInput) {
+                        parcelasComJurosInput.value = method.parcelas_max || '';
+                    }
+                    if (taxaJurosInput) {
+                        taxaJurosInput.value = method.juros || '';
+                    }
+                    break;
+                case 'adiantamento':
+                    if (method.ativo) {
+                        adiantamentoCheckbox.checked = true;
+                        porcentagemAdiantamentoInput.classList.remove('hidden');
+                        porcentagemAdiantamentoInput.value = method.porcentagem || '';
+                    }
+                    break;
+                case 'observacao':
+                    if (method.ativo) {
+                        observacaoCheckbox.checked = true;
+                        observacaoDiv.classList.remove('hidden');
+                        observacaoInput.value = method.texto || '';
+                    }
+                    break;
+                default:
+                    console.warn(`Tipo de forma de pagamento desconhecido: ${method.tipo}`);
+            }
+        });
+    } catch (error) {
+        console.error('Erro ao carregar formas de pagamento:', error);
+    }
+}
+
+
+
+
+
+// Função para salvar as formas de pagamento no IndexedDB
+async function salvarFormasPagamento(event) {
+    event.preventDefault();
+    console.log('Evento submit capturado em salvarFormasPagamento');
+
+    try {
+        const formasPagamento = [];
+
+        // Pix
+        const pixAtivo = document.getElementById('pix').checked;
+        formasPagamento.push({
+            tipo: 'pix',
+            ativo: pixAtivo
+        });
+
+        // Boleto
+        const boletoAtivo = document.getElementById('boleto').checked;
+        formasPagamento.push({
+            tipo: 'boleto',
+            ativo: boletoAtivo
+        });
+
+        // Parcelado sem Juros
+        const parceladoSemJurosAtivo = document.getElementById('parcelado_sem_juros').checked;
+        const parcelasSemJuros = parseInt(document.getElementById('parcelas_sem_juros').value) || null;
+        if (parceladoSemJurosAtivo) {
+            formasPagamento.push({
+                tipo: 'parcelado_sem_juros',
+                ativo: true,
+                parcelas_max: parcelasSemJuros
+            });
+        }
+        
+
+        // Parcelado com Juros
+        const parceladoComJurosAtivo = document.getElementById('parcelado_com_juros').checked;
+        const parcelasComJuros = parseInt(document.getElementById('parcelas_com_juros').value) || null;
+        const taxaJuros = parseFloat(document.getElementById('taxa_juros').value) || null;
+        if (parceladoComJurosAtivo) {
+            formasPagamento.push({
+                tipo: 'parcelado_com_juros',
+                ativo: true,
+                parcelas_max: parcelasComJuros,
+                juros: taxaJuros
+            });
+        }
+
+            // Adiantamento em Porcentagem
+            const solicitarAdiantamento = document.getElementById('solicitar_adiantamento').checked;
+        const porcentagemAdiantamento = parseFloat(document.getElementById('porcentagem_adiantamento').value) || null;
+        if (solicitarAdiantamento) {
+            formasPagamento.push({
+                tipo: 'adiantamento',
+                ativo: true,
+                porcentagem: porcentagemAdiantamento
+            });
+        }
+
+        // Observação
+        const adicionarObservacao = document.getElementById('adicionar_observacao').checked;
+        const observacao = document.getElementById('observacao').value.trim();
+        if (adicionarObservacao) {
+            formasPagamento.push({
+                tipo: 'observacao',
+                ativo: true,
+                texto: observacao
+            });
+        }
+
+        // Validações
+        for (let method of formasPagamento) {
+            if (method.tipo === 'parcelado_sem_juros' && (!method.parcelas_max || method.parcelas_max > 12)) {
+                alert('Número de parcelas sem juros deve ser entre 1 e 12.');
+                console.log('Validação falhou para parcelado_sem_juros');
+                return;
+            }
+            if (method.tipo === 'parcelado_com_juros') {
+                if (!method.parcelas_max || method.parcelas_max > 12) {
+                    alert('Número de parcelas com juros deve ser entre 1 e 12.');
+                    console.log('Validação falhou para parcelado_com_juros - parcelas_max');
+                    return;
+                }
+                if (method.juros === null || method.juros < 0) {
+                    alert('Taxa de juros deve ser um valor positivo.');
+                    console.log('Validação falhou para parcelado_com_juros - juros');
+                    return;
+                }
+            }
+        }
+
+        // Obter informações do usuário
+        const infoUsuario = await obterInformacoesUsuarioDoIndexedDB();
+        infoUsuario.payment_methods = formasPagamento;
+
+        await salvarInformacoesUsuarioNoIndexedDB(infoUsuario);
+        fecharPopupPaymentMethods();
+        alert('Formas de pagamento salvas com sucesso!');
+        console.log('Formas de pagamento salvas com sucesso');
+    } catch (error) {
+        console.error('Erro ao salvar formas de pagamento:', error);
+        alert('Ocorreu um erro ao salvar as formas de pagamento. Por favor, tente novamente.');
+    }
+}
+
+
+
+
 
 
 // Funções para adicionar opções personalizadas
@@ -599,9 +1043,23 @@ async function atualizarSeletoresTiposAplicacao() {
     aplicarMascaraTelefone('#telefoneClienteInput');
     aplicarMascaraTelefone('#phone'); // Campo de telefone no popup de usuário
 
-    // Máscaras para CPF e CNPJ
-    $('#popupClienteCPF, #cpfClienteInput').mask('000.000.000-00');
-    $('#popupClienteCNPJ, #cnpjClienteInput').mask('00.000.000/0000-00');
+
+
+
+
+
+
+
+// Máscara para o campo CPF/CNPJ no popup de Cliente
+$('#popupClienteCpfCnpj').mask('000.000.000-00', {
+    onKeyPress: function(cpfCnpj, e, field, options) {
+        var masks = ['000.000.000-000', '00.000.000/0000-00'];
+        var mask = (cpfCnpj.length > 14) ? masks[1] : masks[0];
+        $('#popupClienteCpfCnpj').mask(mask, options);
+    }
+});
+
+
 
     // Máscara para o campo CPF/CNPJ no popup de usuário
     $('#cpfCnpj').mask('000.000.000-00', {
@@ -613,8 +1071,9 @@ async function atualizarSeletoresTiposAplicacao() {
     });
 });
 
-        function abrirPopup(acao) {
-            console.log("Popup acionado para:", acao);
+ // Função para abrir o popup de Cliente seguindo o padrão do popup de Usuário
+function abrirPopup(acao) {
+    console.log("Popup acionado para:", acao);
 
     const popupCliente = document.getElementById('popupCliente');
     const popupTitulo = document.getElementById('popupTitulo');
@@ -629,34 +1088,75 @@ async function atualizarSeletoresTiposAplicacao() {
         popupTitulo.innerText = 'Adicionar Novo Cliente';
         limparCamposPopup();
         clienteSelecionado = '';
+        console.log("Configurado para adicionar um novo cliente.");
     } else if (acao === 'editar') {
-        popupTitulo.innerText = 'Editar Cliente';
         clienteSelecionado = clienteSelect.value;
+        if (!clienteSelecionado) {
+            console.error("Nenhum cliente selecionado para editar.");
+            return;
+        }
+        popupTitulo.innerText = 'Editar Cliente';
         console.log("Editando cliente:", clienteSelecionado);
         carregarDadosCliente(clienteSelecionado);
+    } else {
+        console.error("Ação desconhecida passada para abrirPopup:", acao);
+        return;
     }
 
+    // Remover a classe 'hidden' para exibir o popup
     popupCliente.classList.remove('hidden');
-    popupCliente.style.display = 'flex';
-    console.log("Popup deve aparecer agora:", popupCliente);
 
+    // Adicionar classe 'scale-95' para iniciar a animação
+    const modalContent = popupCliente.querySelector('div');
+    modalContent.classList.add('scale-95');
+
+    // Remover 'scale-95' e adicionar 'scale-100' após um breve intervalo para acionar a transição
+    setTimeout(() => {
+        modalContent.classList.remove('scale-95');
+        modalContent.classList.add('scale-100');
+    }, 10);
+
+    console.log("Popup deve aparecer agora:", popupCliente);
 }
 
         function limparCamposPopup() {
             document.getElementById('popupClienteNome').value = '';
             document.getElementById('popupClienteTelefone').value = '';
-            document.getElementById('popupClienteEndereco').
+            document.getElementById('popupClienteEndereco').value = '';
+            document.getElementById('popupClienteCpfCnpj').value = '';
 
-value = '';
-            document.getElementById('popupClienteCPF').value = '';
-            document.getElementById('popupClienteCNPJ').value = '';
         }
 
-        function abrirPopupUsuario() {
-            const popupUsuario = document.getElementById('popupUsuario');
-            popupUsuario.classList.remove('hidden');
-            carregarInformacoesUsuario();
-        }
+        // Função para carregar os dados do cliente no popupCliente (modo editar)
+        async function carregarDadosCliente(clienteId) {
+    const cliente = await obterClienteDoIndexedDB(clienteId);
+    if (cliente) {
+        document.getElementById('popupClienteNome').value = cliente.nome;
+        document.getElementById('popupClienteTelefone').value = cliente.telefone;
+        document.getElementById('popupClienteEndereco').value = cliente.endereco;
+        document.getElementById('popupClienteCpfCnpj').value = cliente.cpfCnpj || ''; // Preencher o campo unificado
+        document.getElementById('popupClienteEmail').value = cliente.email || ''; // Preencher o email
+        
+        
+    }
+}
+
+
+// Função para abrir o popupUsuario com animação
+function abrirPopupUsuario() {
+    const popupUsuario = document.getElementById('popupUsuario');
+    popupUsuario.classList.remove('hidden');
+    const modalContent = popupUsuario.querySelector('div');
+    modalContent.classList.add('scale-95');
+    setTimeout(() => {
+        modalContent.classList.remove('scale-95');
+        modalContent.classList.add('scale-100');
+    }, 10);
+    carregarInformacoesUsuario(); // Carrega os dados do usuário ao abrir
+}
+// Função para fechar qualquer popup adicional, se necessário
+
+
 
         async function carregarInformacoesUsuario() {
             try {
@@ -691,56 +1191,105 @@ value = '';
             }
         }
 
+        // Função para limpar os campos do popupUsuario, se necessário
+function limparCamposPopupUsuario() {
+    document.getElementById('name').value = '';
+    document.getElementById('companyName').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('address').value = '';
+    document.getElementById('cpfCnpj').value = '';
+    const logoPreview = document.getElementById('logoPreview');
+    logoPreview.src = '';
+    logoPreview.style.display = 'none';
+    document.getElementById('primaryColorPreview').style.backgroundColor = '#0056b3';
+    document.getElementById('secondaryColorPreview').style.backgroundColor = '#17a2b8';
+    document.getElementById('primaryColor').value = '#0056b3';
+    document.getElementById('secondaryColor').value = '#17a2b8';
+}
+
+// Função para fechar o popup de Cliente seguindo o padrão do popup de Usuário
+function fecharPopupCliente() {
+    const popupCliente = document.getElementById('popupCliente');
+    if (popupCliente) {
+        const modalContent = popupCliente.querySelector('div');
+        modalContent.classList.add('scale-95');
+        modalContent.classList.remove('scale-100');
+        setTimeout(() => {
+            popupCliente.classList.add('hidden');
+        }, 300); // Tempo deve coincidir com a duração da transição
+    }
+}
+
+//salvarInformacoesUsuari
+async function salvarInformacoesUsuario() {
+    const nome = document.getElementById('name').value;
+    const empresa = document.getElementById('companyName').value;
+    const telefone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const endereco = document.getElementById('address').value;
+    const cpfCnpj = document.getElementById('cpfCnpj').value;
+    const logoFile = document.getElementById('logo').files[0];
+    const corPrimaria = document.getElementById('primaryColor').value;
+    const corSecundaria = document.getElementById('secondaryColor').value;
+
+    let logoUrl = '';
+    if (logoFile) {
+        logoUrl = await converterImagemParaBase64(logoFile);
+    } else {
+        const infoExistente = await obterInformacoesUsuarioDoIndexedDB();
+        if (infoExistente && infoExistente.logo) {
+            logoUrl = infoExistente.logo;
+        }
+    }
+
+    try {
+        // Recupera os dados existentes do usuário
+        const existingInfo = await obterInformacoesUsuarioDoIndexedDB();
+
+        // Mescla os novos dados com os dados existentes, preservando payment_methods
+        const infoUsuario = {
+            id: 'info', // Garantir que o id seja sempre 'info'
+            ...existingInfo, // Preserva todos os campos existentes, incluindo payment_methods
+            nome,
+            empresa,
+            telefone,
+            email,
+            endereco,
+            cpfCnpj,
+            logo: logoUrl,
+            cores: {
+                primaria: corPrimaria,
+                secundaria: corSecundaria
+            }
+        };
+
+        // Salva o objeto atualizado no IndexedDB
+        await salvarInformacoesUsuarioNoIndexedDB(infoUsuario);
+        fecharPopupUsuario();
+        alert('Informações do usuário atualizadas com sucesso!');
+    } catch (error) {
+        console.error('Erro ao salvar informações:', error);
+        alert('Erro ao atualizar informações. Por favor, tente novamente.');
+    }
+}
+
+
+
+        // Função para fechar o popupUsuario com animação
         function fecharPopupUsuario() {
-            document.getElementById('popupUsuario').classList.add('hidden');
-        }
+    const popupUsuario = document.getElementById('popupUsuario');
+    if (popupUsuario) {
+        const modalContent = popupUsuario.querySelector('div');
+        modalContent.classList.add('scale-95');
+        modalContent.classList.remove('scale-100');
+        setTimeout(() => {
+            popupUsuario.classList.add('hidden');
+        }, 300); // Tempo deve coincidir com a duração da transição
+    }
+}
 
-        async function salvarInformacoesUsuario() {
-            const nome = document.getElementById('name').value;
-            const empresa = document.getElementById('companyName').value;
-            const telefone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            const endereco = document.getElementById('address').value;
-            const cpfCnpj = document.getElementById('cpfCnpj').value;
-            const logoFile = document.getElementById('logo').files[0];
-            const corPrimaria = document.getElementById('primaryColor').value;
-            const corSecundaria = document.getElementById('secondaryColor').value;
-
-            let logoUrl = '';
-            if (logoFile) {
-                logoUrl = await converterImagemParaBase64(logoFile);
-            } else {
-                const infoExistente = await obterInformacoesUsuarioDoIndexedDB();
-                if (infoExistente && infoExistente.logo) {
-                    logoUrl = infoExistente.logo;
-                }
-            }
-
-            const infoUsuario = {
-                id: 'info',
-                nome,
-                empresa,
-                telefone,
-                email,
-                endereco,
-                cpfCnpj,
-                logo: logoUrl,
-                cores: {
-                    primaria: corPrimaria,
-                    secundaria: corSecundaria
-                }
-            };
-
-            try {
-                await salvarInformacoesUsuarioNoIndexedDB(infoUsuario);
-                fecharPopupUsuario();
-                alert('Informações do usuário atualizadas com sucesso!');
-            } catch (error) {
-                console.error('Erro ao salvar informações:', error);
-                alert('Erro ao atualizar informações. Por favor, tente novamente.');
-            }
-        }
-
+        //abrirIndexedDB
         function converterImagemParaBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -751,53 +1300,61 @@ value = '';
         }
 
         async function abrirIndexedDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('ClientesDB', 7);
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('ClientesDB', 7);
 
-                request.onerror = event => {
-                    console.error('Erro ao abrir o IndexedDB:', event);
-                    reject(event);
-                };
+        request.onerror = event => {
+            console.error('Erro ao abrir o IndexedDB:', event);
+            reject(event);
+        };
 
-                request.onsuccess = event => {
-                    resolve(event.target.result);
-                };
+        request.onsuccess = event => {
+            resolve(event.target.result);
+        };
 
-                request.onupgradeneeded = event => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains('ambientes_personalizados')) {
+        request.onupgradeneeded = event => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('ambientes_personalizados')) {
                 db.createObjectStore('ambientes_personalizados', { keyPath: 'nome' });
             }
             if (!db.objectStoreNames.contains('tipos_aplicacao_personalizados')) {
                 db.createObjectStore('tipos_aplicacao_personalizados', { keyPath: 'nome' });
             }
 
-                    if (!db.objectStoreNames.contains('usuario')) {
-                        db.createObjectStore('usuario', { keyPath: 'id' });
-                    }
-                    if (!db.objectStoreNames.contains('clientes')) {
-                        db.createObjectStore('clientes', { keyPath: 'id', autoIncrement: true });
-                    }
-                    if (!db.objectStoreNames.contains('medidas')) {
-                        db.createObjectStore('medidas', { keyPath: 'cliente' });
-                    }
-                    if (!db.objectStoreNames.contains('verificacao')) {
-                        db.createObjectStore('verificacao', { keyPath: 'id' });
-                    }
-                    if (!db.objectStoreNames.contains('peliculas_personalizadas')) {
-                        db.createObjectStore('peliculas_personalizadas', { keyPath: 'nome' });
-                    }
-                    // Certifique-se de que o object store para ambientes personalizados seja criado
-                    if (!db.objectStoreNames.contains('ambientes_personalizados')) {
-                        db.createObjectStore('ambientes_personalizados', { keyPath: 'nome' });
-                    }
-                    // Certifique-se de que o object store para tipos de aplicação personalizados seja criado
-                    if (!db.objectStoreNames.contains('tipos_aplicacao_personalizados')) {
-                        db.createObjectStore('tipos_aplicacao_personalizados', { keyPath: 'nome' });
-                    }
-                };
-            });
-        }
+            if (!db.objectStoreNames.contains('usuario')) {
+                const usuarioStore = db.createObjectStore('usuario', { keyPath: 'id' });
+                // Inicializar com um registro padrão se não existir
+                usuarioStore.put({
+                    id: 'info',
+                    nome: '',
+                    empresa: '',
+                    telefone: '',
+                    email: '',
+                    endereco: '',
+                    cpfCnpj: '',
+                    logo: '',
+                    cores: {
+                        primaria: '#0056b3',
+                        secundaria: '#17a2b8'
+                    },
+                    payment_methods: []
+                });
+            }
+            if (!db.objectStoreNames.contains('clientes')) {
+                db.createObjectStore('clientes', { keyPath: 'id', autoIncrement: true });
+            }
+            if (!db.objectStoreNames.contains('medidas')) {
+                db.createObjectStore('medidas', { keyPath: 'cliente' });
+            }
+            if (!db.objectStoreNames.contains('verificacao')) {
+                db.createObjectStore('verificacao', { keyPath: 'id' });
+            }
+            if (!db.objectStoreNames.contains('peliculas_personalizadas')) {
+                db.createObjectStore('peliculas_personalizadas', { keyPath: 'nome' });
+            }
+        };
+    });
+}
 
 
         // Funções auxiliares que você já deve ter, mas incluídas aqui para completude
@@ -890,7 +1447,12 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
             salvarInformacoesUsuario();
         });
     }
-
+    const salvarFormasPagamentoBtn = document.getElementById('paymentMethodsForm');
+    if (salvarFormasPagamentoBtn) {
+        document.getElementById('paymentMethodsForm').addEventListener('submit', salvarFormasPagamento);
+        console.log('Listener de submit adicionado para paymentMethodsForm');
+    }
+    
     const popupClienteBtnSalvar = document.getElementById('popupClienteBtnSalvar');
     if (popupClienteBtnSalvar) {
         popupClienteBtnSalvar.addEventListener('click', salvarCliente);
@@ -958,19 +1520,62 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
         });
     }
 });
-    
+    // Event Listener para Adiantamento em Porcentagem
+    const solicitarAdiantamentoCheckbox = document.getElementById('solicitar_adiantamento');
+    const porcentagemAdiantamentoInput = document.getElementById('porcentagem_adiantamento');
+
+    if (solicitarAdiantamentoCheckbox && porcentagemAdiantamentoInput) {
+        solicitarAdiantamentoCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                porcentagemAdiantamentoInput.classList.remove('hidden');
+            } else {
+                porcentagemAdiantamentoInput.classList.add('hidden');
+                porcentagemAdiantamentoInput.value = ''; // Limpar valor quando ocultar
+            }
+        });
+    } else {
+        console.error('Elementos de Adiantamento não encontrados.');
+    }
+
+    // Event Listener para Observação
+    const adicionarObservacaoCheckbox = document.getElementById('adicionar_observacao');
+    const observacaoDiv = document.getElementById('campo_observacao');
+    const observacaoInput = document.getElementById('observacao');
+
+    if (adicionarObservacaoCheckbox && observacaoDiv && observacaoInput) {
+        adicionarObservacaoCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                observacaoDiv.classList.remove('hidden');
+            } else {
+                observacaoDiv.classList.add('hidden');
+                observacaoInput.value = ''; // Limpar observação quando ocultar
+            }
+        });
+    } else {
+        console.error('Elementos de Observação não encontrados.');
+    }
+
+    // Listener para o Formulário de Formas de Pagamento
+    const paymentMethodsForm = document.getElementById('paymentMethodsForm');
+    if (paymentMethodsForm) {
+        paymentMethodsForm.addEventListener('submit', salvarFormasPagamento);
+        console.log('Listener de submit adicionado para paymentMethodsForm');
+    } else {
+        console.error('Elemento paymentMethodsForm não encontrado');
+    }
+
 
         // ... [O código continua com as funções restantes]
         async function carregarDadosCliente(clienteId) {
-            const cliente = await obterClienteDoIndexedDB(clienteId);
-            if (cliente) {
-                document.getElementById('popupClienteNome').value = cliente.nome;
-                document.getElementById('popupClienteTelefone').value = cliente.telefone;
-                document.getElementById('popupClienteEndereco').value = cliente.endereco;
-                document.getElementById('popupClienteCPF').value = cliente.cpf;
-                document.getElementById('popupClienteCNPJ').value = cliente.cnpj;
-            }
-        }
+    const cliente = await obterClienteDoIndexedDB(clienteId);
+    if (cliente) {
+        document.getElementById('popupClienteNome').value = cliente.nome;
+        document.getElementById('popupClienteTelefone').value = cliente.telefone;
+        document.getElementById('popupClienteEndereco').value = cliente.endereco;
+        document.getElementById('popupClienteCpfCnpj').value = cliente.cpfCnpj; // Campo unificado
+    }
+}
+
 
         async function salvarCliente(event) {
     event.preventDefault();
@@ -978,10 +1583,10 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
     const nome = document.getElementById('popupClienteNome').value.trim();
     const telefone = document.getElementById('popupClienteTelefone').value.trim();
     const endereco = document.getElementById('popupClienteEndereco').value.trim();
-    const cpf = document.getElementById('popupClienteCPF').value.trim();
-    const cnpj = document.getElementById('popupClienteCNPJ').value.trim();
+    const cpfCnpj = document.getElementById('popupClienteCpfCnpj').value.trim(); // Novo campo unificado
+    const email = document.getElementById('popupClienteEmail').value.trim(); // Campo de email
 
-    const novoCliente = { nome, telefone, endereco, cpf, cnpj };
+    const novoCliente = { nome, telefone, endereco, cpfCnpj, email }; // Inclui o email e o campo unificado
 
     try {
         let clienteId;
@@ -1000,6 +1605,8 @@ async function carregarTiposAplicacaoPersonalizadosDoIndexedDB() {
         alert("Ocorreu um erro ao salvar o cliente. Por favor, tente novamente.");
     }
 }
+
+
 
 async function atualizarClienteNoIndexedDB(id, cliente) {
     const db = await abrirIndexedDB();
@@ -1023,6 +1630,7 @@ async function atualizarClienteNoIndexedDB(id, cliente) {
     });
 }
 
+
 async function obterClienteDoIndexedDB(id) {
     const db = await abrirIndexedDB();
     return new Promise((resolve, reject) => {
@@ -1038,17 +1646,23 @@ async function obterClienteDoIndexedDB(id) {
         };
     });
 }
+
+
   
 
-        function fecharPopup() {
-            const popupCliente = document.getElementById('popupCliente');
-            if (popupCliente) {
-                popupCliente.classList.add('hidden');
-                popupCliente.style.display = 'none';
-            } else {
-                console.error("Elemento popupCliente não encontrado");
-            }
-        }
+    // Função para fechar o popupCliente com animação
+// Função para fechar o popupCliente com animação
+function fecharPopup() {
+    const popupCliente = document.getElementById('popupCliente');
+    if (popupCliente) {
+        const modalContent = popupCliente.querySelector('div');
+        modalContent.classList.add('scale-95');
+        modalContent.classList.remove('scale-100');
+        setTimeout(() => {
+            popupCliente.classList.add('hidden');
+        }, 300); // Tempo deve coincidir com a duração da transição
+    }
+}
 
         function confirmClearMedidas() {
             if (confirm("Tem certeza que deseja apagar este cliente e suas medidas?")) {
@@ -1204,7 +1818,8 @@ function createDynamicSelector(type, options, placeholder) {
 async function saveNewOption(type, value) {
     const db = await abrirIndexedDB();
     const transaction = db.transaction([`${type}_personalizados`], 'readwrite');
-    const store = transaction.objectStore(`${type}_personalizados`);
+const store = transaction.objectStore(`${type}_personalizados`);
+
     await store.put({ nome: value });
 }
 
@@ -1229,14 +1844,16 @@ function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isCh
     const container = document.getElementById('medidasContainer');
     const medidaGroup = document.createElement('div');
     medidaGroup.classList.add('bg-white', 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2');
-    
+
     const isZebra = container.children.length % 2 === 0;
     const zebraClass = isZebra ? 'bg-gray-300' : 'bg-white';
-    
+
     medidaGroup.classList.add(zebraClass, 'shadow-md', 'rounded-lg', 'p-2', 'space-y-2', 'mb-2');
 
-    medidaGroup.innerHTML = `
-        <div class="flex items-center space-x-1">
+    console.log("Películas disponíveis para o seletor:", peliculas);
+
+    medidaGroup.innerHTML = 
+        `<div class="flex items-center space-x-1">
             <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-0">
             <input type="number" placeholder="L" value="${largura}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 largura-input" oninput="atualizarTotal(this)" maxlength="3">
             <input type="number" placeholder="A" value="${altura}" class="w-1/4 p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 altura-input" oninput="atualizarTotal(this)" maxlength="3">
@@ -1248,19 +1865,32 @@ function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isCh
                 ${peliculas.map(p => `<option value="${p.nome}" ${p.nome === peliculaSelecionada ? 'selected' : ''}>${p.nome}</option>`).join('')}
                 <option value="Outra">Outra</option>
             </select>
-            <button class="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="duplicarGrupo(this)">
-                <i class="fas fa-copy"></i>
+            <!-- Botão para editar a película -->
+            <button onclick="editarPelicula(this)" class="p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Editar Película">
+                <i class="fas fa-edit fa-lg text-purple-500"></i>
             </button>
-            <button class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="toggleAdditionalFields(this)">
-                <i class="fas fa-eye"></i>
+            <button class="p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-300 shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="duplicarGrupo(this)" aria-label="Duplicar Grupo de Medidas">
+                <i class="fas fa-copy text-green-500"></i>
             </button>
-            <button class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="deleteMedidaGroup(this)">
-                <i class="fas fa-trash-alt"></i>
+            <button class="p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-300 shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center" onclick="toggleAdditionalFields(this)" aria-label="Toggle Campos Adicionais">
+                <i class="fas fa-eye text-blue-500"></i>
+            </button>
+            <button class="p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-300 shadow-md flex-shrink-0 w-8 h-8 flex items-center justify-center delete-button" onclick="deleteMedidaGroup(this)" style="display: ${isChecked ? 'none' : 'flex'};" aria-label="Excluir Grupo de Medidas">
+                <i class="fas fa-trash-alt text-red-500"></i>
             </button>
         </div>
         <div class="additional-fields hidden mt-2">
-        </div>
-    `;
+            <!-- Seletor Dinâmico de Ambiente -->
+            <div class="mb-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ambiente</label>
+                <input type="text" placeholder="Selecione ou digite o ambiente" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-100">
+            </div>
+            <!-- Seletor Dinâmico de Tipo de Aplicação -->
+            <div class="mb-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipo de Aplicação</label>
+                <input type="text" placeholder="Selecione ou digite o tipo de aplicação" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-100">
+            </div>
+        </div>`;
 
     container.insertBefore(medidaGroup, container.firstChild);
 
@@ -1313,6 +1943,48 @@ function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isCh
     console.log("Grupo de medidas adicionado com sucesso");
 }
 
+
+//editarPelicula
+function editarPelicula(button) {
+    // Obter o grupo de medidas correspondente
+    const medidaGroup = button.closest('.bg-white');
+    if (!medidaGroup) {
+        console.error("Grupo de medidas não encontrado para editar a película.");
+        return;
+    }
+
+    // Obter o seletor de película dentro do grupo de medidas
+    const peliculaSelect = medidaGroup.querySelector('.pelicula-select');
+    if (!peliculaSelect) {
+        console.error("Seletor de película não encontrado no grupo de medidas.");
+        return;
+    }
+
+    // Armazena a referência do seletor atual para atualização posterior
+    currentSelectForPelicula = peliculaSelect;
+
+    // Obter o nome da película selecionada
+    const peliculaNome = peliculaSelect.value;
+
+    // Obter a película dos dados predefinidos ou personalizados
+    let pelicula = peliculas.find(p => p.nome === peliculaNome);
+    if (!pelicula) {
+        const peliculasPersonalizadas = peliculas.filter(p => !peliculasPredefinidas.some(pp => pp.nome === p.nome));
+        pelicula = peliculasPersonalizadas.find(p => p.nome === peliculaNome);
+    }
+
+    if (!pelicula) {
+        alert("Película selecionada não encontrada.");
+        return;
+    }
+
+    // Abrir o popup com os dados da película para edição
+    abrirPopupPeliculaPersonalizada(pelicula);
+}
+
+
+
+       //function atualizarTotal
         function atualizarTotal(input) {
     const group = input.closest('.bg-white');
     const largura = parseFloat(group.querySelector('.largura-input').value) || 0;
@@ -1421,16 +2093,27 @@ function duplicarMedidas() {
                 button.innerHTML = '<i class="fas fa-eye"></i>';
             }
         }
-
-        function toggleInputs(checkbox) {
-            const inputs = checkbox.closest('.bg-white').querySelectorAll('input, select');
-            inputs.forEach(input => {
-                if (input !== checkbox) {
-                    input.disabled = !checkbox.checked;
-                }
-            });
-            calculateTotal();
+//toggleInputs 
+function toggleInputs(checkbox) {
+    const medidaGroup = checkbox.closest('.bg-white');
+    const inputs = medidaGroup.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        if (input !== checkbox) {
+            input.disabled = !checkbox.checked;
         }
+    });
+    
+    // Seleciona o botão de excluir dentro do grupo de medidas usando a classe específica
+    const deleteButton = medidaGroup.querySelector('.delete-button');
+    if (deleteButton) {
+        // Mostrar o botão de excluir apenas se o checkbox não estiver marcado
+        deleteButton.style.display = checkbox.checked ? 'none' : 'flex';
+    }
+
+    calculateTotal();
+}
+
+
 
         function copyShareURL() {
             const cliente = clienteSelect.value;
@@ -1450,22 +2133,105 @@ function duplicarMedidas() {
             });
         }
 
+
+
+
         // Funções para películas personalizadas
-        function abrirPopupPeliculaPersonalizada() {
-            const popupHTML = `
-                <div id="popupPeliculaPersonalizada" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div class="bg-white p-6 rounded-lg shadow-lg relative max-w-md w-full">
-                        <h2 class="text-xl font-semibold mb-4">Adicionar Película Personalizada</h2>
-                        <input type="text" id="nomePeliculaPersonalizada" class="w-full p-2 mb-4 border border-gray-300 rounded-md" placeholder="Nome da Película">
-                        <input type="number" id="precoPeliculaPersonalizada" class="w-full p-2 mb-4 border border-gray-300 rounded-md" placeholder="Preço por m²">
-                        <button id="salvarPeliculaPersonalizada" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">Salvar Película</button>
-                        <button onclick="fecharPopupPeliculaPersonalizada()" class="mt-2 w-full p-3 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition duration-300">Cancelar</button>
-                    </div>
+        function abrirPopupPeliculaPersonalizada(pelicula = null) {
+    const popupHTML = `
+        <div id="popupPeliculaPersonalizada" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out max-w-md w-full mx-4 sm:mx-0">
+                <!-- Cabeçalho do Popup -->
+                <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">${pelicula ? 'Editar Película' : 'Adicionar Película Personalizada'}</h2>
+                    <button onclick="fecharPopupPeliculaPersonalizada()" class="text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', popupHTML);
-            document.getElementById('salvarPeliculaPersonalizada').addEventListener('click', salvarPeliculaPersonalizada);
-        }
+                <!-- Corpo do Popup -->
+                <form id="peliculaForm" class="p-6 space-y-4">
+                    <!-- Campos do formulário -->
+                    <div>
+                        <label for="nomePeliculaPersonalizada" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome da Película</label>
+                        <input type="text" id="nomePeliculaPersonalizada" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" placeholder="Nome da Película" required value="${pelicula ? pelicula.nome : ''}">
+                    </div>
+                    <div>
+                        <label for="precoPeliculaPersonalizada" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Preço por m² (R$)</label>
+                        <input type="number" id="precoPeliculaPersonalizada" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" placeholder="Preço por m²" min="0" step="0.01" required value="${pelicula ? pelicula.preco : ''}">
+                    </div>
+                    <div>
+                        <label for="garantiaFabricante" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Garantia Fabricante (Anos)</label>
+                        <select id="garantiaFabricante" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" required>
+                            <option value="" disabled ${pelicula ? '' : 'selected'}>Selecione a garantia fabricante</option>
+                            <option value="0" ${pelicula && pelicula.garantiaFabricante === 0 ? 'selected' : ''}>0</option>
+                            <option value="1" ${pelicula && pelicula.garantiaFabricante === 1 ? 'selected' : ''}>1</option>
+                            <option value="2" ${pelicula && pelicula.garantiaFabricante === 2 ? 'selected' : ''}>2</option>
+                            <option value="3" ${pelicula && pelicula.garantiaFabricante === 3 ? 'selected' : ''}>3</option>
+                            <option value="5" ${pelicula && pelicula.garantiaFabricante === 5 ? 'selected' : ''}>5</option>
+                            <option value="7" ${pelicula && pelicula.garantiaFabricante === 7 ? 'selected' : ''}>7</option>
+                            <option value="10" ${pelicula && pelicula.garantiaFabricante === 10 ? 'selected' : ''}>10</option>
+                            <option value="15" ${pelicula && pelicula.garantiaFabricante === 15 ? 'selected' : ''}>15</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="garantiaMaoDeObra" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Garantia Mão de Obra (Inicia em Dias)</label>
+                        <select id="garantiaMaoDeObra" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100" required>
+                            <option value="" disabled ${pelicula ? '' : 'selected'}>Selecione a garantia mão de obra</option>
+                            <option value="30" ${pelicula && pelicula.garantiaMaoDeObra === 30 ? 'selected' : ''}>Inicia em 30 dias</option>
+                            <option value="60" ${pelicula && pelicula.garantiaMaoDeObra === 60 ? 'selected' : ''}>Inicia em 60 dias</option>
+                            <option value="90" ${pelicula && pelicula.garantiaMaoDeObra === 90 ? 'selected' : ''}>Inicia em 90 dias</option>
+                            <option value="120" ${pelicula && pelicula.garantiaMaoDeObra === 120 ? 'selected' : ''}>Inicia em 120 dias</option>
+                            <option value="180" ${pelicula && pelicula.garantiaMaoDeObra === 180 ? 'selected' : ''}>Inicia em 180 dias</option>
+                            <option value="360" ${pelicula && pelicula.garantiaMaoDeObra === 360 ? 'selected' : ''}>Inicia em 360 dias</option>
+                        </select>
+                    </div>
+                </form>
+                <!-- Rodapé do Popup com Botões -->
+                <div class="flex justify-end items-center p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 space-x-4">
+                    ${pelicula ? 
+                        `<button 
+                            id="deletePeliculaButton" 
+                            class="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 shadow-md flex items-center justify-center" 
+                            onclick="deletarPeliculaPersonalizada('${pelicula.nome}')"
+                            aria-label="Excluir Película"
+                        >
+                            <i class="fas fa-trash-alt fa-lg"></i>
+                            <span class="ml-2">Excluir</span>
+                        </button>` : ''}
+                    <button 
+                        id="salvarPeliculaPersonalizada" 
+                        type="submit" 
+                        form="peliculaForm" 
+                        class="flex-grow px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 shadow-md flex items-center justify-center space-x-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                        <span>${pelicula ? 'Salvar Alterações' : 'Salvar Película'}</span>
+                    </button>
+                    <button 
+                        onclick="fecharPopupPeliculaPersonalizada()" 
+                        class="p-2 bg-gray-200 text-gray-500 rounded-md hover:bg-gray-300 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400"
+                        aria-label="Cancelar"
+                    >
+                        <i class="fas fa-times fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    document.body.insertAdjacentHTML('beforeend', popupHTML);
+
+    // Adiciona o event listener ao formulário para capturar o evento de submissão
+    document.getElementById('peliculaForm').addEventListener('submit', function(event) {
+        salvarPeliculaPersonalizada(event, pelicula);
+    });
+
+    // Se estiver no modo de edição, ajustar a referência para a película atual
+    if (pelicula) {
+        currentEditPelicula = pelicula;
+    }
+}
+
+
 
         function fecharPopupPeliculaPersonalizada() {
             const popup = document.getElementById('popupPeliculaPersonalizada');
@@ -1474,72 +2240,227 @@ function duplicarMedidas() {
             }
         }
 
-        async function salvarPeliculaPersonalizada() {
-            const nome = document.getElementById('nomePeliculaPersonalizada').value.trim();
-            const preco = parseFloat(document.getElementById('precoPeliculaPersonalizada').value);
+       //SALVAR PELICULAS
+       async function salvarPeliculaPersonalizada(event, peliculaEditada = null) {
+    event.preventDefault(); // Previne o envio padrão do formulário
 
-            if (nome && !isNaN(preco)) {
-                const novaPelicula = { nome, preco };
-                await salvarPeliculaPersonalizadaNoIndexedDB(novaPelicula);
-                fecharPopupPeliculaPersonalizada();
-                await atualizarSeletoresPeliculas();
-                calculateTotal();
-            } else {
-                alert('Por favor, preencha todos os campos corretamente.');
-            }
+    const nome = document.getElementById('nomePeliculaPersonalizada').value.trim();
+    const preco = parseFloat(document.getElementById('precoPeliculaPersonalizada').value);
+    const garantiaFabricante = parseInt(document.getElementById('garantiaFabricante').value);
+    const garantiaMaoDeObra = parseInt(document.getElementById('garantiaMaoDeObra').value);
+
+    // Validações
+    if (!nome) {
+        alert('Por favor, insira o nome da película.');
+        return;
+    }
+
+    if (isNaN(preco) || preco < 0) {
+        alert('Por favor, insira um preço válido.');
+        return;
+    }
+
+    if (isNaN(garantiaFabricante)) {
+        alert('Por favor, selecione uma garantia fabricante.');
+        return;
+    }
+
+    if (isNaN(garantiaMaoDeObra)) {
+        alert('Por favor, selecione uma garantia mão de obra.');
+        return;
+    }
+
+    const novaPelicula = { 
+        nome, 
+        preco, 
+        garantiaFabricante, 
+        garantiaMaoDeObra 
+    };
+
+    try {
+        let nomeOriginal = null;
+        if (peliculaEditada) {
+            nomeOriginal = peliculaEditada.nome;
+            // Atualizar a película existente
+            await atualizarPeliculaPersonalizadaNoIndexedDB(nomeOriginal, novaPelicula);
+            alert('Película atualizada com sucesso!');
+        } else {
+            // Salvar uma nova película
+            await salvarPeliculaPersonalizadaNoIndexedDB(novaPelicula);
+            alert('Película personalizada salva com sucesso!');
         }
 
-        async function salvarPeliculaPersonalizadaNoIndexedDB(pelicula) {
-           
+        fecharPopupPeliculaPersonalizada();
 
- const db = await abrirIndexedDB();
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['peliculas_personalizadas'], 'readwrite');
-                const store = transaction.objectStore('peliculas_personalizadas');
-                const request = store.put(pelicula);
+        // Atualizar os seletores de películas
+        await atualizarSeletoresPeliculas();
 
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        async function carregarPeliculasPersonalizadasDoIndexedDB() {
-            const db = await abrirIndexedDB();
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['peliculas_personalizadas'], 'readonly');
-                const store = transaction.objectStore('peliculas_personalizadas');
-                const request = store.getAll();
-
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        async function atualizarSeletoresPeliculas() {
-            const peliculasPersonalizadas = await carregarPeliculasPersonalizadasDoIndexedDB();
-            peliculas = [...peliculasPredefinidas, ...peliculasPersonalizadas];
-
+        // Atualizar todos os seletores que tinham o nome original para o novo nome
+        if (nomeOriginal && nomeOriginal !== nome) {
             const seletores = document.querySelectorAll('.pelicula-select');
             seletores.forEach(seletor => {
-                const selectedValue = seletor.value;
-                seletor.innerHTML = peliculas.map(p => `<option value="${p.nome}">${p.nome}</option>`).join('');
-                seletor.innerHTML += '<option value="Outra">Outra</option>';
-                seletor.value = selectedValue;
+                if (seletor.value === nomeOriginal) {
+                    seletor.value = nome;
+                }
             });
         }
 
-        function onPeliculaChange(select) {
-            if (select.value === 'Outra') {
-                abrirPopupPeliculaPersonalizada();
-            }
-            calculateTotal();
+        // Atualizar o seletor que iniciou a ação para a nova película
+        if (currentSelectForPelicula) {
+            currentSelectForPelicula.value = nome;
+            currentSelectForPelicula = null; // Limpar a referência após atualização
         }
 
-        async function carregarPeliculasPersonalizadas() {
-            const peliculasPersonalizadas = await carregarPeliculasPersonalizadasDoIndexedDB();
-            peliculas = [...peliculasPredefinidas, ...peliculasPersonalizadas];
-            await atualizarSeletoresPeliculas();
+        calculateTotal();
+    } catch (error) {
+        console.error('Erro ao salvar película personalizada:', error);
+        alert('Ocorreu um erro ao salvar a película personalizada. Por favor, tente novamente.');
+    }
+}
+
+
+
+
+
+
+//atualizarPeliculaPersonalizadaNoIndexedDB
+async function atualizarPeliculaPersonalizadaNoIndexedDB(nomeOriginal, peliculaAtualizada) {
+    const db = await abrirIndexedDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['peliculas_personalizadas'], 'readwrite');
+        const store = transaction.objectStore('peliculas_personalizadas');
+        
+        if (nomeOriginal !== peliculaAtualizada.nome) {
+            // Remove a película antiga se o nome foi alterado
+            const deleteRequest = store.delete(nomeOriginal);
+            deleteRequest.onsuccess = () => {
+                // Adiciona a película atualizada
+                const putRequest = store.put(peliculaAtualizada);
+                putRequest.onsuccess = () => resolve();
+                putRequest.onerror = (event) => reject(event);
+            };
+            deleteRequest.onerror = (event) => reject(event);
+        } else {
+            // Se o nome não mudou, apenas atualiza os outros campos
+            const putRequest = store.put(peliculaAtualizada);
+            putRequest.onsuccess = () => resolve();
+            putRequest.onerror = (event) => reject(event);
         }
+    });
+}
+
+
+
+//salvarPeliculaPersonalizadaNoIndexedDB:
+async function salvarPeliculaPersonalizadaNoIndexedDB(pelicula) {
+    const db = await abrirIndexedDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['peliculas_personalizadas'], 'readwrite');
+        const store = transaction.objectStore('peliculas_personalizadas');
+        const request = store.put(pelicula);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+
+//carregarPeliculasPersonalizadasDoIndexedDB
+async function carregarPeliculasPersonalizadasDoIndexedDB() {
+    const db = await abrirIndexedDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['peliculas_personalizadas'], 'readonly');
+        const store = transaction.objectStore('peliculas_personalizadas');
+        const request = store.getAll();
+
+        request.onsuccess = () => {
+            console.log('Películas carregadas:', request.result);
+            resolve(request.result);
+        };
+        request.onerror = () => {
+            console.error('Erro ao carregar películas personalizadas:', request.error);
+            reject(request.error);
+        };
+    });
+}
+
+
+
+//deletarPeliculaPersonalizada
+async function deletarPeliculaPersonalizada(nomePelicula) {
+    if (!confirm("Tem certeza que deseja excluir esta película? Esta ação não pode ser desfeita.")) {
+        return;
+    }
+
+    try {
+        await removerPeliculaPersonalizadaDoIndexedDB(nomePelicula);
+        alert('Película excluída com sucesso!');
+        fecharPopupPeliculaPersonalizada();
+        await atualizarSeletoresPeliculas(); // Atualização após exclusão
+        calculateTotal();
+    } catch (error) {
+        console.error('Erro ao excluir película:', error);
+        alert('Ocorreu um erro ao excluir a película. Por favor, tente novamente.');
+    }
+}
+
+
+
+//removerPeliculaPersonalizadaDoIndexedDB
+async function removerPeliculaPersonalizadaDoIndexedDB(nomePelicula) {
+    const db = await abrirIndexedDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['peliculas_personalizadas'], 'readwrite');
+        const store = transaction.objectStore('peliculas_personalizadas');
+        const request = store.delete(nomePelicula);
+
+        request.onsuccess = () => resolve();
+        request.onerror = (event) => reject(event);
+    });
+}
+
+
+// atualizarSeletoresPeliculas
+async function atualizarSeletoresPeliculas() {
+    const peliculasPersonalizadas = await carregarPeliculasPersonalizadasDoIndexedDB();
+    peliculas = [...peliculasPredefinidas, ...peliculasPersonalizadas]; // Inclui predefinidas e personalizadas
+
+    console.log('Array de películas atualizado:', peliculas);
+
+    // Atualizar todos os seletores
+    const seletores = document.querySelectorAll('.pelicula-select');
+    seletores.forEach(seletor => {
+        const valorSelecionado = seletor.value;
+        seletor.innerHTML = peliculas.map(p => `<option value="${p.nome}">${p.nome}</option>`).join('') + '<option value="Outra">Outra</option>';
+
+        // Retentar selecionar o valor anterior se ainda existir
+        if (peliculas.some(p => p.nome === valorSelecionado)) {
+            seletor.value = valorSelecionado;
+        } else {
+            seletor.value = 'Outra';
+        }
+    });
+}
+
+
+
+    
+function onPeliculaChange(select) {
+    if (select.value === 'Outra') {
+        currentSelectForPelicula = select; // Armazena a referência do <select>
+        abrirPopupPeliculaPersonalizada();
+    }
+    calculateTotal();
+}
+
+
+
+//carregarPeliculasPersonalizadas
+async function carregarPeliculasPersonalizadas() {
+    const peliculasPersonalizadas = await carregarPeliculasPersonalizadasDoIndexedDB();
+    peliculas = [...peliculasPredefinidas, ...peliculasPersonalizadas];
+    await atualizarSeletoresPeliculas();
+}
 
         // Sistema de verificação do aplicativo
         const DURACAO_TESTE_GRATIS = 30 * 24 * 60 * 60 * 1000; // 30 dias em milissegundos
@@ -1704,7 +2625,10 @@ async function ativarAplicativo() {
                             ${frasesGeradas.map(frase => `<li>${frase}</li>`).join('')}
                         </ol>
                         <input type="text" id="codigoAtivacao" class="w-full p-2 border border-gray-300 rounded-md mb-4" placeholder="Insira o código de ativação">
-                        <button id="verificarCodigo" class="w-full p-3 bg-blue-500 text-white rounded-md">Ativar Aplicativo</button>
+<button id="verificarCodigo" class="w-full p-3 bg-blue-500 text-white rounded-md flex items-center justify-center">
+    <i class="fas fa-dollar-sign fa-lg"></i>
+    <span class="ml-2">Ativar Aplicativo</span>
+</button>
                     </div>
                 </div>
             `;
@@ -1794,18 +2718,20 @@ async function ativarAplicativo() {
         // Função para gerar PDF
         async function generatePDF_v3_0() {
     try {
-        const clienteNome = clienteSelect.value;
-        if (!clienteNome) {
+        // 1. Validação do Cliente
+        const clienteId = clienteSelect.value;
+        if (!clienteId) {
             alert('Selecione um cliente.');
             return;
         }
 
-        const cliente = clientes.find(c => c.id == clienteNome);
+        const cliente = clientes.find(c => c.id == clienteId);
         if (!cliente) {
             alert('Informações do cliente não encontradas.');
             return;
         }
 
+        // 2. Configuração do jsPDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
             orientation: 'portrait',
@@ -1817,7 +2743,10 @@ async function ativarAplicativo() {
         const pageHeight = doc.internal.pageSize.height;
         const margin = 15;
 
+        // 3. Obter Informações do Usuário e Formas de Pagamento
         const infoUsuario = await obterInformacoesUsuarioDoIndexedDB();
+        const formasPagamento = infoUsuario.payment_methods || []; // Recupera as formas de pagamento
+
         const colors = {
             primary: hexToRgb(infoUsuario.cores?.primaria || '#0056b3'),
             secondary: hexToRgb(infoUsuario.cores?.secundaria || '#17a2b8'),
@@ -1826,11 +2755,13 @@ async function ativarAplicativo() {
             white: [255, 255, 255]
         };
 
+        // Função para converter hex para RGB
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
         }
 
+        // Função para adicionar texto de forma segura
         function safeText(text, x, y, options = {}) {
             if (typeof text !== 'string') text = String(text || '');
             if (typeof x !== 'number' || typeof y !== 'number') {
@@ -1844,6 +2775,7 @@ async function ativarAplicativo() {
             }
         }
 
+        // Função para adicionar a logo da empresa
         async function addLogo(x, y, maxWidth, maxHeight) {
             if (infoUsuario.logo) {
                 try {
@@ -1878,6 +2810,7 @@ async function ativarAplicativo() {
             }
         }
 
+        // Função para adicionar o rodapé
         function addFooter(pageNumber) {
             doc.setFillColor(...colors.primary);
             doc.rect(0, pageHeight - 10, pageWidth, 10, 'F');
@@ -1888,12 +2821,14 @@ async function ativarAplicativo() {
             safeText(`Página ${pageNumber}`, pageWidth - margin, pageHeight - 3, { align: 'right' });
         }
 
+        // Função para adicionar uma nova página com rodapé
         function addPage(pageNumber) {
             doc.addPage();
             addFooter(pageNumber);
             return margin + 10;
         }
 
+        // Função para adicionar títulos de seção
         function addSectionTitle(title, y) {
             doc.setDrawColor(...colors.primary);
             doc.setLineWidth(0.5);
@@ -1905,6 +2840,7 @@ async function ativarAplicativo() {
             return y + 20;
         }
 
+        // Função para adicionar a capa do PDF
         async function addCover() {
             doc.setFillColor(...colors.white);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
@@ -1927,6 +2863,8 @@ async function ativarAplicativo() {
             safeText(`Orçamento Nº: ${Math.floor(Math.random() * 10000)}`, pageWidth - margin, 48, { align: 'right' });
             doc.setFillColor(...colors.lightGray);
             doc.roundedRect(70, 90, pageWidth - 85, 60, 3, 3, 'F');
+
+            // Seção Contratada
             doc.setTextColor(...colors.primary);
             doc.setFont("helvetica", 'bold');
             doc.setFontSize(12);
@@ -1938,6 +2876,9 @@ async function ativarAplicativo() {
             safeText(`Telefone: ${infoUsuario.telefone || ''}`, 75, 125);
             safeText(`Email: ${infoUsuario.email || ''}`, 75, 135);
             safeText(`CNPJ/CPF: ${infoUsuario.cpfCnpj || ''}`, 75, 145);
+            safeText(`Endereço: ${infoUsuario.endereco || ''}`, 75, 155); // Adicionado
+
+            // Seção Cliente
             doc.setFillColor(...colors.lightGray);
             doc.roundedRect(70, 160, pageWidth - 85, 60, 3, 3, 'F');
             doc.setTextColor(...colors.primary);
@@ -1951,142 +2892,227 @@ async function ativarAplicativo() {
             safeText(`Telefone: ${cliente.telefone || ''}`, 75, 195);
             safeText(`Email: ${cliente.email || 'N/A'}`, 75, 205);
             safeText(`CNPJ/CPF: ${cliente.cpfCnpj || cliente.cpf || cliente.cnpj || 'N/A'}`, 75, 215);
+            safeText(`Endereço: ${cliente.endereco || ''}`, 75, 225); // Adicionado
+
             addFooter(1);
         }
 
-        function addContent() {
-            let y = addPage(2);
-            let pageNumber = 2;
+        // Funções auxiliares para cálculos
+        function calculateParceladoSemJuros(total, parcelas_max) {
+            return (total / parcelas_max).toFixed(2);
+        }
 
-            y = addSectionTitle("Orçamento Detalhado", y);
-            y += 10;
+        function calculateParceladoComJuros(total, parcelas_max, juros) {
+            // Fórmula de juros compostos: FV = PV * (1 + i)^n
+            const fator = Math.pow(1 + juros / 100, parcelas_max);
+            const totalComJuros = total * fator;
+            const valorParcela = (totalComJuros / parcelas_max).toFixed(2);
+            return valorParcela;
+        }
 
-            const medidaGroups = document.querySelectorAll('#medidasContainer > div');
+        function calculateAdiantamento(total, porcentagem) {
+            return ((total * porcentagem) / 100).toFixed(2);
+        }
 
-            const medidasPorPelicula = {};
-            const totaisGerais = { totalM2: 0, precoTotal: 0 };
 
-            medidaGroups.forEach(group => {
-                const isChecked = group.querySelector('input[type="checkbox"]')?.checked;
-                const largura = parseFloat(group.querySelector('.largura-input')?.value) || 0;
-                const altura = parseFloat(group.querySelector('.altura-input')?.value) || 0;
-                const quantidade = parseInt(group.querySelector('.quantidade-input')?.value) || 0;
 
-                if (isChecked && largura > 0 && altura > 0 && quantidade > 0) {
-                    const peliculaNome = group.querySelector('.pelicula-select')?.value;
-                    if (peliculaNome) {
-                        if (!medidasPorPelicula[peliculaNome]) {
-                            medidasPorPelicula[peliculaNome] = [];
-                        }
-                        medidasPorPelicula[peliculaNome].push(group);
 
-                        const pelicula = peliculas.find(p => p.nome === peliculaNome);
-                        const area = largura * altura * quantidade / 10000;
-                        const preco = pelicula ? area * pelicula.preco : 0;
 
-                        totaisGerais.totalM2 += area;
-                        totaisGerais.precoTotal += preco;
-                    }
+
+ // Função principal para adicionar o conteúdo ao PDF
+function addContent() {
+    let y = addPage(2);
+    let pageNumber = 2;
+
+    // Seção Orçamento Detalhado
+    y = addSectionTitle("Orçamento Detalhado", y);
+    y += 10;
+
+    const medidaGroups = document.querySelectorAll('#medidasContainer > div');
+
+    const medidasPorPelicula = {};
+    const totaisGerais = { totalM2: 0, precoTotal: 0 };
+
+    // Agrupar medidas por película
+    medidaGroups.forEach(group => {
+        const isChecked = group.querySelector('input[type="checkbox"]')?.checked;
+        const largura = parseFloat(group.querySelector('.largura-input')?.value) || 0;
+        const altura = parseFloat(group.querySelector('.altura-input')?.value) || 0;
+        const quantidade = parseInt(group.querySelector('.quantidade-input')?.value) || 0;
+
+        if (isChecked && largura > 0 && altura > 0 && quantidade > 0) {
+            const peliculaNome = group.querySelector('.pelicula-select')?.value;
+            if (peliculaNome) {
+                if (!medidasPorPelicula[peliculaNome]) {
+                    medidasPorPelicula[peliculaNome] = [];
                 }
-            });
+                medidasPorPelicula[peliculaNome].push(group);
 
-            function addMedidasTable(medidas, peliculaNome) {
-                const headers = ["Item", "Dimensões", "Ambiente", "Tipo", "Área", "Preço"];
-                const colWidths = [15, 30, 40, 40, 20, 30];
-                
-                doc.setTextColor(...colors.primary);
-                doc.setFont("helvetica", 'bold');
-                doc.setFontSize(12);
-                safeText(peliculaNome, margin, y);
+                const pelicula = peliculas.find(p => p.nome === peliculaNome);
+                const area = largura * altura * quantidade / 10000; // Convertendo para m²
+                const preco = pelicula ? area * pelicula.preco : 0;
+
+                totaisGerais.totalM2 += area;
+                totaisGerais.precoTotal += preco;
+            }
+        }
+    });
+        
+        
+    function addMedidasTable(medidas, peliculaNome) {
+        // [Código da função já modificado acima]
+    }
+
+
+
+
+
+
+
+
+
+
+// Função para adicionar garantias por película
+function addGarantiasSection() {
+    y = addSectionTitle("Garantias", y);
+    y += 10;
+
+    Object.keys(medidasPorPelicula).forEach(peliculaNome => {
+        const pelicula = peliculas.find(p => p.nome === peliculaNome);
+        if (pelicula) {
+            if (y > pageHeight - 60) {
+                y = addPage(++pageNumber);
+                y = addSectionTitle("Garantias (Continuação)", y);
                 y += 10;
-
-                doc.setFillColor(...colors.primary);
-                doc.rect(margin, y, pageWidth - 2*margin, 8, 'F');
-                doc.setTextColor(...colors.white);
-                doc.setFont("helvetica", 'bold');
-                doc.setFontSize(9);
-
-                let xOffset = margin;
-                headers.forEach((header, index) => {
-                    safeText(header, xOffset + 2, y + 6);
-                    xOffset += colWidths[index];
-                });
-                y += 10;
-
-                doc.setFont("helvetica", 'normal');
-                doc.setFontSize(8);
-
-                const zebraColor1 = [255, 255, 255];
-                const zebraColor2 = [245, 245, 245];
-
-                medidas.forEach((group, index) => {
-                    if (y > pageHeight - 60) {
-                        y = addPage(++pageNumber);
-                        doc.setFillColor(...colors.primary);
-                        doc.rect(margin, y, pageWidth - 2*margin, 8, 'F');
-                        doc.setTextColor(...colors.white);
-                        doc.setFont("helvetica", 'bold');
-                        doc.setFontSize(9);
-                        xOffset = margin;
-                        headers.forEach((header, index) => {
-                            safeText(header, xOffset + 2, y + 6);
-                            xOffset += colWidths[index];
-                        });
-                        y += 10;
-                        doc.setFont("helvetica", 'normal');
-                        doc.setFontSize(8);
-                    }
-
-                    doc.setFillColor(...(index % 2 === 0 ? zebraColor1 : zebraColor2));
-                    doc.rect(margin, y - 2, pageWidth - 2*margin, 10, 'F');
-
-                    doc.setTextColor(...colors.text);
-
-                    const largura = group.querySelector('.largura-input')?.value || '0';
-                    const altura = group.querySelector('.altura-input')?.value || '0';
-                    const quantidade = group.querySelector('.quantidade-input')?.value || '0';
-                    const totalM2 = group.querySelector('input[placeholder="M²"]')?.value || '0';
-                    const ambiente = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o ambiente"]')?.value || '';
-                    const tipoAplicacao = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o tipo de aplicação"]')?.value || '';
-                    const pelicula = peliculas.find(p => p.nome === peliculaNome);
-
-                    xOffset = margin;
-                    safeText(`${index + 1}`, xOffset + 2, y + 4);
-                    xOffset += colWidths[0];
-                    safeText(`${largura}x${altura} (${quantidade})`, xOffset + 2, y + 4);
-                    xOffset += colWidths[1];
-                    safeText(ambiente, xOffset + 2, y + 4);
-                    xOffset += colWidths[2];
-                    safeText(tipoAplicacao, xOffset + 2, y + 4);
-                    xOffset += colWidths[3];
-                    safeText(`${totalM2} m²`, xOffset + 2, y + 4);
-                    xOffset += colWidths[4];
-
-                    if (pelicula) {
-                        const preco = (pelicula.preco * parseFloat(totalM2)).toFixed(2);
-                        safeText(`R$ ${preco}`, xOffset + 2, y + 4);
-                    }
-
-                    y += 10;
-                });
-
-                return y;
             }
 
-            Object.entries(medidasPorPelicula).forEach(([peliculaNome, medidas], index) => {
-                if (index > 0) y = addPage(++pageNumber);
-                y = addMedidasTable(medidas, peliculaNome);
-                
-                const totalPelicula = {
-                    totalM2: medidas.reduce((sum, group) => sum + (parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0), 0),
-                    precoTotal: medidas.reduce((sum, group) => {
-                        const area = parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0;
-                        const pelicula = peliculas.find(p => p.nome === peliculaNome);
+            doc.setTextColor(...colors.primary);
+            doc.setFont("helvetica", 'bold');
+            doc.setFontSize(12);
+            safeText(peliculaNome, margin, y);
+            y += 7;
+
+            doc.setTextColor(...colors.text);
+            doc.setFont("helvetica", 'normal');
+            doc.setFontSize(10);
+            safeText(`Garantia Fabricante: ${pelicula.garantiaFabricante} anos`, margin + 5, y);
+            y += 7;
+            safeText(`Garantia Mão de Obra: ${pelicula.garantiaMaoDeObra} dias`, margin + 5, y);
+            y += 10;
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+// Função para adicionar uma tabela de medidas por película
+function addMedidasTable(medidas, peliculaNome) {
+    const headers = ["Item", "Dimensões", "Ambiente", "Tipo", "Área", "Preço"];
+    const colWidths = [15, 30, 40, 40, 20, 30];
+    
+    doc.setTextColor(...colors.primary);
+    doc.setFont("helvetica", 'bold');
+    doc.setFontSize(12);
+    safeText(peliculaNome, margin, y);
+    y += 10;
+
+    // Cabeçalho da tabela
+    doc.setFillColor(...colors.primary);
+    doc.rect(margin, y, pageWidth - 2*margin, 10, 'F');
+    doc.setTextColor(...colors.white);
+    doc.setFont("helvetica", 'bold');
+    doc.setFontSize(10);
+
+    let xOffset = margin;
+    headers.forEach((header, index) => {
+        safeText(header, xOffset + 2, y + 7);
+        xOffset += colWidths[index];
+    });
+    y += 12;
+
+    doc.setFont("helvetica", 'normal');
+    doc.setFontSize(9);
+
+    const zebraColor1 = [255, 255, 255];
+    const zebraColor2 = [245, 245, 245];
+
+    medidas.forEach((group, index) => {
+        if (y > pageHeight - 60) {
+            y = addPage(++pageNumber);
+            // Repetir o cabeçalho da tabela na nova página
+            doc.setFillColor(...colors.primary);
+            doc.rect(margin, y, pageWidth - 2*margin, 10, 'F');
+            doc.setTextColor(...colors.white);
+            doc.setFont("helvetica", 'bold');
+            doc.setFontSize(10);
+            headers.forEach((header, index) => {
+                safeText(header, margin + 2 + colWidths.slice(0, index).reduce((a, b) => a + b, 0), y + 7);
+            });
+            y += 12;
+            doc.setFont("helvetica", 'normal');
+            doc.setFontSize(9);
+        }
+
+        doc.setFillColor(...(index % 2 === 0 ? zebraColor1 : zebraColor2));
+        doc.rect(margin, y - 2, pageWidth - 2*margin, 10, 'F');
+
+        doc.setTextColor(...colors.text);
+
+        const largura = group.querySelector('.largura-input')?.value || '0';
+        const altura = group.querySelector('.altura-input')?.value || '0';
+        const quantidade = group.querySelector('.quantidade-input')?.value || '0';
+        const totalM2 = group.querySelector('input[placeholder="M²"]')?.value || '0';
+        const ambiente = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o ambiente"]')?.value || '';
+        const tipoAplicacao = group.querySelector('.additional-fields input[placeholder="Selecione ou digite o tipo de aplicação"]')?.value || '';
+        const pelicula = peliculas.find(p => p.nome === peliculaNome);
+
+        xOffset = margin;
+        safeText(`${index + 1}`, xOffset + 2, y + 3);
+        xOffset += colWidths[0];
+        safeText(`${largura}x${altura} (${quantidade})`, xOffset + 2, y + 3);
+        xOffset += colWidths[1];
+        safeText(ambiente, xOffset + 2, y + 3);
+        xOffset += colWidths[2];
+        safeText(tipoAplicacao, xOffset + 2, y + 3);
+        xOffset += colWidths[3];
+        safeText(`${totalM2} m²`, xOffset + 2, y + 3);
+        xOffset += colWidths[4];
+        
+        if (pelicula) {
+            const preco = (pelicula.preco * parseFloat(totalM2)).toFixed(2);
+            safeText(`R$ ${preco}`, xOffset + 2, y + 3);
+        }
+        xOffset += colWidths[5];
+
+        y += 10;
+    });
+
+    return y;
+}
+
+
+        // Adicionar tabelas de medidas por película
+    Object.entries(medidasPorPelicula).forEach(([peliculaNome, medidas], index) => {
+        if (index > 0) y = addPage(++pageNumber);
+        y = addMedidasTable(medidas, peliculaNome);
+        
+        const totalPelicula = {
+            totalM2: medidas.reduce((sum, group) => sum + (parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0), 0),
+            precoTotal: medidas.reduce((sum, group) => {
+                const area = parseFloat(group.querySelector('input[placeholder="M²"]')?.value) || 0;
+                const pelicula = peliculas.find(p => p.nome === peliculaNome);
                 return sum + (pelicula ? area * pelicula.preco : 0);
             }, 0)
         };
 
-        // Acumular nos totais gerais
+            // Acumular nos totais gerais
         totaisGerais.totalM2 += totalPelicula.totalM2;
         totaisGerais.precoTotal += totalPelicula.precoTotal;
 
@@ -2112,6 +3138,7 @@ async function ativarAplicativo() {
         y = addPage(++pageNumber);
     }
 
+            // Seção de Total Geral
     y = addSectionTitle("Total Geral do Orçamento", y);
     y += 10;
     doc.setDrawColor(...colors.primary);
@@ -2127,6 +3154,10 @@ async function ativarAplicativo() {
 
     y += 30;
 
+    // Adicionar a seção de garantias
+    addGarantiasSection();
+
+          // Seção de Condições de Pagamento e Informações Relevantes
     y = addPage(++pageNumber);
     y = addSectionTitle("Condições de Pagamento e Informações Relevantes", y);
     y += 10;
@@ -2135,15 +3166,59 @@ async function ativarAplicativo() {
     doc.setFont("helvetica", 'normal');
     doc.setFontSize(10);
 
+    // Construindo as Condições de Pagamento com Formas de Pagamento Dinâmicas
     const condicoesPagamento = [
-        "1. Formas de Pagamento Aceitas:",
-        "   • Transferência bancária e Pix",
-        "   • Cartão de crédito (em até 3x sem juros)",
-        "   • Boleto bancário",
+        "1. Formas de Pagamento Aceitas:"
+    ];
+
+         // Adicionando as formas de pagamento dinâmicas com valores
+    formasPagamento.forEach(method => {
+        let metodoTexto = '';
+        switch (method.tipo) {
+            case 'pix':
+                metodoTexto = `• Pix R$ ${totaisGerais.precoTotal.toFixed(2)}`;
+                break;
+            case 'boleto':
+                metodoTexto = `• Boleto Bancário R$ ${totaisGerais.precoTotal.toFixed(2)}`;
+                break;
+            case 'parcelado_sem_juros':
+                const parcelaSemJuros = calculateParceladoSemJuros(totaisGerais.precoTotal, method.parcelas_max);
+                metodoTexto = `• Parcelado sem Juros (até ${method.parcelas_max}x)`;
+                break;
+            case 'parcelado_com_juros':
+                const parcelaComJuros = calculateParceladoComJuros(totaisGerais.precoTotal, method.parcelas_max, method.juros);
+                metodoTexto = `• Parcelado com Juros (até ${method.parcelas_max}x, Taxa de ${method.juros}%)`;
+                break;
+            case 'adiantamento':
+                const adiantamento = calculateAdiantamento(totaisGerais.precoTotal, method.porcentagem);
+                metodoTexto = `• Adiantamento: ${method.porcentagem}% do valor total R$ ${adiantamento}`;
+                break;
+            case 'observacao':
+                metodoTexto = `• Observações Pag: ${method.texto}`;
+                break;
+            default:
+                metodoTexto = `• ${method.tipo}`;
+        }
+        if (method.ativo) {
+            condicoesPagamento.push(metodoTexto);
+
+            // Detalhes adicionais para alguns tipos
+            if (method.tipo === 'parcelado_sem_juros') {
+                condicoesPagamento.push(`   Número de Parcelas: ${method.parcelas_max}x R$ ${calculateParceladoSemJuros(totaisGerais.precoTotal, method.parcelas_max)}`);
+            }
+            if (method.tipo === 'parcelado_com_juros') {
+                condicoesPagamento.push(`   Número de Parcelas: ${method.parcelas_max}x R$ ${calculateParceladoComJuros(totaisGerais.precoTotal, method.parcelas_max, method.juros)}`);
+                condicoesPagamento.push(`   Taxa de Juros: ${method.juros}%`);
+            }
+            // Não há detalhes adicionais para Adiantamento e Observação
+        }
+    });
+
+            // Adicionando as condições estáticas
+    const condicoesEstaticas = [
         "",
         "2. Cronograma de Pagamento:",
-        "   • 50% do valor quando acima de R$ 2.500 na aprovação do orçamento",
-        "   • 50% restantes após a conclusão dos serviços",
+        "   • Aberto a negociação",
         "",
         "3. Prazo de Instalação:",
         "   • A ser definido em comum acordo, conforme disponibilidade",
@@ -2161,18 +3236,21 @@ async function ativarAplicativo() {
         "   • O cliente é responsável por fornecer acesso adequado ao local de instalação"
     ];
 
-    const lineHeight = 6;
-    condicoesPagamento.forEach((condicao, index) => {
-        if (y > pageHeight - 40) {
-            y = addPage(++pageNumber);
-            y = addSectionTitle("Condições de Pagamento (continuação)", y);
-            y += 10;
-        }
-        safeText(condicao, margin, y);
-        y += lineHeight;
-    });
+            // Combinar as formas de pagamento dinâmicas com as condições estáticas
+    const todasCondicoes = condicoesPagamento.concat(condicoesEstaticas);
 
-    y += 20;
+const lineHeight = 6;
+todasCondicoes.forEach((condicao, index) => {
+    if (y > pageHeight - 40) {
+        y = addPage(++pageNumber);
+        y = addSectionTitle("Condições de Pagamento (Continuação)", y);
+        y += 10;
+    }
+    safeText(condicao, margin, y);
+    y += lineHeight;
+});
+
+y += 20;
     doc.setDrawColor(...colors.primary);
     doc.setLineWidth(0.5);
     doc.line(margin, y, pageWidth / 2 - 20, y);
@@ -2186,36 +3264,42 @@ async function ativarAplicativo() {
     safeText(infoUsuario.email || '', margin, y + 24);
 }
 
-    await addCover();
-    addContent();
+        // Adicionar a capa
+        await addCover();
+        // Adicionar o conteúdo
+        addContent();
 
-    doc.save(`orcamento_${cliente.nome.replace(/\s+/g, '_').toLowerCase()}.pdf`);
-    console.log('PDF gerado com sucesso!');
-} catch (error) {
-    console.error("Erro ao gerar PDF:", error);
-    
-    if (error.message && error.message.includes("Cannot read properties of undefined")) {
-        alert("Erro ao gerar o PDF: Dados da empresa incompletos. Por favor, preencha todas as informações da empresa no menu de configurações do usuário antes de gerar o PDF.");
-    } else {
-        alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique se todas as informações necessárias foram preenchidas e tente novamente.");
-    }
-}}
+        // Salvar o PDF com o nome baseado no nome do cliente
+        doc.save(`orcamento_${cliente.nome.replace(/\s+/g, '_').toLowerCase()}.pdf`);
+        console.log('PDF gerado com sucesso!');
+    } catch (error) {
+        console.error("Erro ao gerar PDF:", error);
 
-        // Funções auxiliares para manipulação do IndexedDB
-        async function salvarClienteNoIndexedDB(cliente) {
-            const db = await abrirIndexedDB();
-            const transaction = db.transaction(['clientes'], 'readwrite');
-            const objectStore = transaction.objectStore('clientes');
-            const request = objectStore.add(cliente);
-            return new Promise((resolve, reject) => {
-                request.onsuccess = event => {
-                    resolve(event.target.result);
-                };
-                request.onerror = event => {
-                    reject(event);
-                };
-            });
+        if (error.message && error.message.includes("Cannot read properties of undefined")) {
+            alert("Erro ao gerar o PDF: Dados da empresa incompletos. Por favor, preencha todas as informações da empresa no menu de configurações do usuário antes de gerar o PDF.");
+        } else {
+            alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique se todas as informações necessárias foram preenchidas e tente novamente.");
         }
+    }
+}
+
+
+async function salvarClienteNoIndexedDB(cliente) {
+    const db = await abrirIndexedDB();
+    const transaction = db.transaction(['clientes'], 'readwrite');
+    const objectStore = transaction.objectStore('clientes');
+    const request = objectStore.add(cliente);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = event => {
+            resolve(event.target.result);
+        };
+        request.onerror = event => {
+            reject(event);
+        };
+    });
+}
+
+
 
         async function obterTodosClientesDoIndexedDB() {
             const db = await abrirIndexedDB();
